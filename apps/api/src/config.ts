@@ -4,6 +4,8 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
   PUBLIC_WEB_URL: z.string().url().default("http://localhost:5173"),
+  /** Extra website origins allowed to call the API, comma-separated (e.g. https://www.getcowry.com). */
+  CORS_EXTRA_ORIGINS: z.string().default(""),
 
   // Which supplier fills orders: "mock" for local development, "esimaccess" for real eSIMs.
   SUPPLIER: z.enum(["mock", "esimaccess"]).default("mock"),
