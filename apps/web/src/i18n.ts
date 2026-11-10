@@ -90,7 +90,7 @@ const en = {
     help: "Stuck? Message us on WhatsApp.",
   },
   dev: { title: "Test payment", body: "Development mode: no card is charged. Press the button to simulate a successful payment.", pay: "Simulate payment" },
-  footer: { rights: "Get Cowry · A brand of Crest International Alliance LLC", terms: "Terms", refunds: "Refunds", privacy: "Privacy", install: "Install guide" },
+  footer: { rights: "Get Cowry · A product by Crest International Alliance LLC", terms: "Terms", refunds: "Refunds", privacy: "Privacy", install: "Install guide" },
   legal: {
     draft: "Draft. This page must be written and reviewed before launch.",
     terms: "Terms of service",
@@ -188,7 +188,7 @@ const fr: Dict = {
     help: "Bloqué ? Écrivez-nous sur WhatsApp.",
   },
   dev: { title: "Paiement de test", body: "Mode développement : aucune carte n'est débitée. Appuyez pour simuler un paiement réussi.", pay: "Simuler le paiement" },
-  footer: { rights: "Get Cowry · Une marque de Crest International Alliance LLC", terms: "Conditions", refunds: "Remboursements", privacy: "Confidentialité", install: "Guide d'installation" },
+  footer: { rights: "Get Cowry · Un produit de Crest International Alliance LLC", terms: "Conditions", refunds: "Remboursements", privacy: "Confidentialité", install: "Guide d'installation" },
   legal: {
     draft: "Brouillon. Cette page doit être rédigée et vérifiée avant le lancement.",
     terms: "Conditions d'utilisation",

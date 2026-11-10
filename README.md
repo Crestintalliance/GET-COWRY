@@ -1,6 +1,6 @@
 # Get Cowry
 
-Travel eSIMs for trips home to Africa. A brand of Crest International Alliance LLC.
+Travel eSIMs for trips home to Africa. A product by Crest International Alliance LLC.
 
 - `apps/api`: the backend API that both the website and the mobile app use
 - `apps/web`: the getcowry.com store (React + Vite), English and French, Night Green design
