@@ -71,7 +71,7 @@ export class DevPayments implements PaymentProvider {
   constructor(private readonly webUrl: string) {}
 
   async createCheckout(order: Order): Promise<CheckoutSession> {
-    return { sessionId: `dev_${order.id}`, url: `${this.webUrl}/dev-pay?order=${order.id}&token=${order.publicToken}` };
+    return { sessionId: `dev_${order.id}`, url: `${this.webUrl}/dev-pay?order=${order.id}&token=${order.publicToken}&lang=${order.locale}` };
   }
 
   parseWebhook(): PaymentEvent {
