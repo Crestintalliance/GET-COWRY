@@ -1,8 +1,13 @@
 # Get Cowry
 
-Travel eSIMs for trips home to Africa. A brand of Crest International Alliance LLC.
+Travel eSIMs for trips home to Africa. A product by Crest International Alliance LLC.
 
-This repo holds the backend API that both the getcowry.com website and the Get Cowry mobile app will use.
+- `apps/api`: the backend API that both the website and the mobile app use
+- `apps/web`: the getcowry.com store (React + Vite), English and French, Night Green design
+
+Open http://localhost:5173, pick a country and plan, enter any email, then press "Simulate payment" to get a test eSIM QR code. No card is charged until Stripe keys are added.
+
+Set `VITE_WHATSAPP_NUMBER` (international format, e.g. 15551234567) in `apps/web/.env` so the Help links open WhatsApp; without it they fall back to hello@getcowry.com.
 
 ## What the API does
 
@@ -19,7 +24,7 @@ Requires Node 20+ and pnpm.
 ```bash
 pnpm install
 cp apps/api/.env.example apps/api/.env   # defaults work as-is: mock supplier, no-card checkout, in-memory orders
-pnpm dev                                   # API on http://localhost:4000
+pnpm dev                                   # website on http://localhost:5173, API on :4000
 pnpm test                                  # unit and API tests
 ```
 
@@ -55,7 +60,8 @@ curl "localhost:4000/api/orders/<orderId>?token=<token>"
 
 ## Known gaps (next steps)
 
-- Website front end (getcowry.com) and the React Native app
+- Terms, refund and privacy pages are placeholders: write and review them before launch
+- The React Native app
 - Real email delivery of the QR code
 - Top-ups, and automatic refunds when the supplier fails (failed orders are flagged `fulfillment_failed` and logged for manual refund)
 - A second supplier, routed per country
