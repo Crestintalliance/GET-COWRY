@@ -10,7 +10,8 @@ export interface AppDeps {
   payments: PaymentProvider;
   /** Enables POST /api/dev/orders/:id/pay. Never true in production. */
   devPayments: boolean;
-  corsOrigin?: string;
+  /** Website origins allowed to call the API from a browser. */
+  corsOrigins?: string[];
 }
 
 const CheckoutBody = z.object({
@@ -26,10 +27,14 @@ export function createApp(deps: AppDeps) {
   const app = express();
   app.disable("x-powered-by");
 
-  if (deps.corsOrigin) {
-    const origin = deps.corsOrigin;
+  if (deps.corsOrigins?.length) {
+    const allowed = new Set(deps.corsOrigins);
     app.use((req, res, next) => {
-      res.setHeader("Access-Control-Allow-Origin", origin);
+      const origin = req.header("origin");
+      if (origin && allowed.has(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        res.setHeader("Vary", "Origin");
+      }
       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
       res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
       if (req.method === "OPTIONS") return void res.sendStatus(204);

@@ -40,6 +40,8 @@ curl -X POST localhost:4000/api/dev/orders/<orderId>/pay
 curl "localhost:4000/api/orders/<orderId>?token=<token>"
 ```
 
+See [DEPLOY.md](DEPLOY.md) for putting the site online at getcowry.com.
+
 ## Going live, step by step
 
 1. **eSIM Access sandbox:** set `SUPPLIER=esimaccess` and your access code (and secret key, if eSIM Access gives you one). Check `/api/countries/gn/plans` returns real Guinea plans. The request signing and field names in `src/suppliers/esimaccess.ts` follow eSIM Access's public docs; confirm them against your developer console and adjust if anything differs.
