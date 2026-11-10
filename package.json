@@ -1,0 +1,16 @@
+{
+  "name": "get-cowry",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Get Cowry: travel eSIMs for trips home to Africa",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @cowry/api dev",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build"
+  }
+}
