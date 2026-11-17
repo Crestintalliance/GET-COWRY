@@ -11,7 +11,7 @@ export const useLang = () => useContext(Ctx);
 
 export function helpHref(): string {
   const n = import.meta.env.VITE_WHATSAPP_NUMBER;
-  return n ? `https://wa.me/${n.replace(/\D/g, "")}` : "mailto:hello@getcowry.com";
+  return n ? `https://wa.me/${n.replace(/\D/g, "")}` : "mailto:hello@joincowry.com";
 }
 
 export function Logo({ size = 34 }: { size?: number }) {
@@ -42,7 +42,7 @@ export function LangLayout() {
         <header className="site-header">
           <Link to={`/${lang}`} className="brand">
             <Logo />
-            Get Cowry
+            JoinCowry
           </Link>
           <nav className="nav" aria-label="Main">
             <Link to={`/${lang}/countries`}>{t.nav.destinations}</Link>

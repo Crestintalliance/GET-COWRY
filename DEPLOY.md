@@ -1,11 +1,11 @@
-# Deploying Get Cowry
+# Deploying JoinCowry
 
 Everything runs on [Render](https://render.com) from `render.yaml`:
 
 | Piece | Render service | Address |
 | --- | --- | --- |
-| Website | `cowry-web` (static site) | getcowry.com, www.getcowry.com |
-| Backend API | `cowry-api` (web service, always on) | api.getcowry.com |
+| Website | `cowry-web` (static site) | joincowry.com, www.joincowry.com |
+| Backend API | `cowry-api` (web service, always on) | api.joincowry.com |
 | Database | `cowry-db` (Postgres) | private |
 
 The domain stays at Squarespace Domains; only its DNS records change.
@@ -27,11 +27,11 @@ Sign up at render.com with your **business email**, then connect GitHub and allo
 
 Check: open the `cowry-api` URL Render gives you (`https://cowry-api-xxxx.onrender.com/api/health`), which should show `{"ok":true}`.
 
-## 3. Point getcowry.com at Render
+## 3. Point joincowry.com at Render
 
 **In Render**, add custom domains:
-- `cowry-web` → Settings → Custom Domains → add `getcowry.com` and `www.getcowry.com`
-- `cowry-api` → Settings → Custom Domains → add `api.getcowry.com`
+- `cowry-web` → Settings → Custom Domains → add `joincowry.com` and `www.joincowry.com`
+- `cowry-api` → Settings → Custom Domains → add `api.joincowry.com`
 
 Render then shows the exact DNS records to create. Use those values. They will look like this:
 
@@ -41,7 +41,7 @@ Render then shows the exact DNS records to create. Use those values. They will l
 | CNAME | `www` | `cowry-web.onrender.com` (as shown) |
 | CNAME | `api` | `cowry-api.onrender.com` (as shown) |
 
-**In Squarespace** (domains.squarespace.com → getcowry.com → **DNS**):
+**In Squarespace** (domains.squarespace.com → joincowry.com → **DNS**):
 1. Remove the existing Squarespace website records (the "Squarespace Defaults" A records for `@` and the `www` CNAME pointing to Squarespace). Leave email (MX) and any TXT verification records alone.
 2. Add the three records above under **Custom records**.
 3. Back in Render, press **Verify** on each domain. DNS can take from a few minutes up to 48 hours; Render issues the HTTPS certificates automatically.
@@ -49,11 +49,11 @@ Render then shows the exact DNS records to create. Use those values. They will l
 ## 4. Connect Stripe
 
 1. Stripe dashboard (test mode first) → **Developers → Webhooks → Add endpoint**
-   - URL: `https://api.getcowry.com/api/webhooks/stripe`
+   - URL: `https://api.joincowry.com/api/webhooks/stripe`
    - Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`
 2. Copy the endpoint's signing secret (`whsec_…`) into `STRIPE_WEBHOOK_SECRET` on `cowry-api`. Render redeploys.
-3. In Stripe settings set the **statement descriptor** to `GETCOWRY`.
-4. Buy a plan on getcowry.com with Stripe test card `4242 4242 4242 4242`. The order page should show the QR code.
+3. In Stripe settings set the **statement descriptor** to `JOINCOWRY`.
+4. Buy a plan on joincowry.com with Stripe test card `4242 4242 4242 4242`. The order page should show the QR code.
 
 ## 5. Going live
 
@@ -68,4 +68,4 @@ Then switch Stripe to live mode: replace `STRIPE_SECRET_KEY` with `sk_live_…`,
 
 ## Costs
 
-Roughly: API "starter" plan plus a small Postgres database, a few dollars a month each; the static website is free. Check render.com/pricing for current prices. Once getcowry.com points at Render, the Squarespace **website** plan is no longer used. Cancel it at its renewal date, but keep the **domain**.
+Roughly: API "starter" plan plus a small Postgres database, a few dollars a month each; the static website is free. Check render.com/pricing for current prices. Once joincowry.com points at Render, the Squarespace **website** plan is no longer used. Cancel it at its renewal date, but keep the **domain**.

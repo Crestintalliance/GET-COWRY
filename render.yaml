@@ -1,4 +1,4 @@
-# Render Blueprint: website, API and database for Get Cowry.
+# Render Blueprint: website, API and database for JoinCowry.
 # In Render: New → Blueprint → pick this repo. Secrets marked `sync: false` are asked for on first deploy.
 # Plan names change over time; if Render rejects one, pick the closest plan in the dashboard.
 
@@ -10,7 +10,7 @@ databases:
     user: cowry
 
 services:
-  # Backend API: api.getcowry.com
+  # Backend API: api.joincowry.com
   - type: web
     name: cowry-api
     runtime: node
@@ -25,15 +25,15 @@ services:
       - key: NODE_VERSION
         value: "22"
       - key: PUBLIC_WEB_URL
-        value: https://getcowry.com
+        value: https://joincowry.com
       - key: CORS_EXTRA_ORIGINS
-        value: https://www.getcowry.com
+        value: https://www.joincowry.com,https://cowry-web.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: cowry-db
           property: connectionString
       - key: SUPPLIER
-        value: esimaccess
+        value: mock # sample plans; switch to esimaccess once real keys are set
       - key: ESIMACCESS_ACCESS_CODE
         sync: false
       - key: ESIMACCESS_SECRET_KEY
@@ -47,7 +47,7 @@ services:
       - key: PRICE_MIN_MARKUP
         value: "1.25"
 
-  # Website: getcowry.com and www.getcowry.com
+  # Website: joincowry.com and www.joincowry.com
   - type: web
     name: cowry-web
     runtime: static
@@ -57,7 +57,7 @@ services:
       - key: NODE_VERSION
         value: "22"
       - key: VITE_API_URL
-        value: https://api.getcowry.com
+        value: https://cowry-api.onrender.com
       - key: VITE_WHATSAPP_NUMBER
         sync: false
     routes:
