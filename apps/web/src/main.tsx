@@ -6,6 +6,7 @@ import { Countries } from "./pages/Countries";
 import { Country } from "./pages/Country";
 import { Home } from "./pages/Home";
 import { Order } from "./pages/Order";
+import { Trip } from "./pages/Trip";
 import { DevPay, Install, Legal } from "./pages/Static";
 import "./styles.css";
 
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "countries", element: <Countries /> },
       { path: "countries/:code", element: <Country /> },
+      { path: "trip", element: <Trip /> },
       { path: "order/:id", element: <Order /> },
       { path: "install", element: <Install /> },
       { path: "terms", element: <Legal kind="terms" /> },

@@ -8,12 +8,12 @@ export function isLang(v: string | undefined): v is Lang {
 const en = {
   nav: { destinations: "Destinations", how: "How it works", help: "Help", switchLang: "Français" },
   hero: {
-    pill: "Travel eSIMs for Africa",
+    pill: "Travel eSIMs, starting with Africa",
     title1: "Touch down.",
     title2: "Light up.",
     body: "Your eSIM is ready before you board. Switch it on when you land and you're online, with help in French and English.",
     searchLabel: "Where are you going?",
-    searchPlaceholder: "Where are you going? e.g. Guinea",
+    searchPlaceholder: "Add countries, e.g. Guinea",
     searchButton: "Find plans",
   },
   popular: { title: "Popular trips home", lead: "One eSIM, on local networks you already know.", all: "All countries" },
@@ -97,6 +97,20 @@ const en = {
     refunds: "Refund policy",
     privacy: "Privacy policy",
   },
+  picker: {
+    showAll: "Show all destinations",
+    remove: "Remove",
+    noMatch: "No destination matches",
+    selected: "selected",
+    pickOne: "Add at least one destination.",
+  },
+  trip: {
+    title: "Your trip",
+    lead: "Choose a plan for each country. For now you buy one eSIM at a time; each one opens its own checkout.",
+    change: "Change destinations",
+    buy: "Buy this eSIM",
+    none: "No plans for this country yet.",
+  },
   error: "Something went wrong. Please try again.",
   loading: "Loading…",
 };
@@ -106,12 +120,12 @@ export type Dict = typeof en;
 const fr: Dict = {
   nav: { destinations: "Destinations", how: "Comment ça marche", help: "Aide", switchLang: "English" },
   hero: {
-    pill: "eSIM de voyage pour l'Afrique",
+    pill: "eSIM de voyage, en commençant par l'Afrique",
     title1: "Vous atterrissez.",
     title2: "Vous êtes connecté.",
     body: "Votre eSIM est prête avant l'embarquement. Activez-la à l'arrivée et vous êtes en ligne, avec une aide en français et en anglais.",
     searchLabel: "Où allez-vous ?",
-    searchPlaceholder: "Où allez-vous ? ex. Guinée",
+    searchPlaceholder: "Ajoutez des pays, ex. Guinée",
     searchButton: "Voir les forfaits",
   },
   popular: { title: "Retours au pays les plus courants", lead: "Une eSIM, sur les réseaux locaux que vous connaissez.", all: "Tous les pays" },
@@ -195,6 +209,20 @@ const fr: Dict = {
     refunds: "Politique de remboursement",
     privacy: "Politique de confidentialité",
   },
+  picker: {
+    showAll: "Voir toutes les destinations",
+    remove: "Retirer",
+    noMatch: "Aucune destination ne correspond",
+    selected: "sélectionné(s)",
+    pickOne: "Ajoutez au moins une destination.",
+  },
+  trip: {
+    title: "Votre voyage",
+    lead: "Choisissez un forfait pour chaque pays. Pour l'instant, chaque eSIM s'achète séparément, avec son propre paiement.",
+    change: "Modifier les destinations",
+    buy: "Acheter cette eSIM",
+    none: "Pas encore de forfait pour ce pays.",
+  },
   error: "Un problème est survenu. Veuillez réessayer.",
   loading: "Chargement…",
 };
@@ -214,8 +242,16 @@ const FR_COUNTRY: Record<string, string> = {
   US: "États-Unis",
 };
 
+const FR_NAMES = typeof Intl !== "undefined" && "DisplayNames" in Intl ? new Intl.DisplayNames(["fr"], { type: "region" }) : null;
+
 export function countryName(code: string, fallback: string, lang: Lang): string {
-  return lang === "fr" ? (FR_COUNTRY[code] ?? fallback) : fallback;
+  if (lang !== "fr") return fallback;
+  if (FR_COUNTRY[code]) return FR_COUNTRY[code];
+  try {
+    return FR_NAMES?.of(code) ?? fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 export function formatPrice(cents: number, lang: Lang): string {
