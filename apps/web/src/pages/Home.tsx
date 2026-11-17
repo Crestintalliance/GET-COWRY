@@ -1,8 +1,16 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Country } from "../api";
+import { DestinationPicker } from "../components/DestinationPicker";
 import { countryName, formatPrice } from "../i18n";
 import { useLang } from "../layout";
+
+/** One country opens its page; several open the trip page with a section per country. */
+export function tripPath(lang: string, codes: string[]): string {
+  return codes.length === 1
+    ? `/${lang}/countries/${codes[0]!.toLowerCase()}`
+    : `/${lang}/trip?to=${codes.join(",").toLowerCase()}`;
+}
 
 /** Countries Cowry markets first. Shown on the home page when the supplier lists them. */
 const FEATURED = ["GN", "SN", "CI", "ML", "NG", "GH"];
@@ -22,7 +30,8 @@ export function Home() {
   const { lang, t } = useLang();
   const navigate = useNavigate();
   const [countries, setCountries] = useState<Country[]>([]);
-  const [query, setQuery] = useState("");
+  const [picked, setPicked] = useState<string[]>([]);
+  const [hint, setHint] = useState(false);
 
   useEffect(() => {
     api.countries().then(setCountries).catch(() => setCountries([]));
@@ -32,10 +41,9 @@ export function Home() {
     (c): c is Country => Boolean(c),
   );
 
-  function onSearch(e: FormEvent) {
-    e.preventDefault();
-    const match = findCountry(query, countries, lang);
-    navigate(match ? `/${lang}/countries/${match.countryCode.toLowerCase()}` : `/${lang}/countries?q=${encodeURIComponent(query)}`);
+  function onSearch() {
+    if (!picked.length) return setHint(true);
+    navigate(tripPath(lang, picked));
   }
 
   return (
@@ -48,21 +56,23 @@ export function Home() {
           <span>{t.hero.title2}</span>
         </h1>
         <p>{t.hero.body}</p>
-        <form className="search" role="search" onSubmit={onSearch}>
-          <label htmlFor="dest" className="sr-only">
-            {t.hero.searchLabel}
-          </label>
-          <input
-            id="dest"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t.hero.searchPlaceholder}
-            autoComplete="off"
+        <div role="search">
+          <DestinationPicker
+            countries={countries}
+            selected={picked}
+            onChange={(c) => {
+              setPicked(c);
+              setHint(false);
+            }}
+            onSubmit={onSearch}
+            submitLabel={t.hero.searchButton}
           />
-          <button className="btn btn-lime" type="submit">
-            {t.hero.searchButton}
-          </button>
-        </form>
+          {hint && (
+            <p className="error" role="alert">
+              {t.picker.pickOne}
+            </p>
+          )}
+        </div>
       </section>
 
       {featured.length > 0 && (

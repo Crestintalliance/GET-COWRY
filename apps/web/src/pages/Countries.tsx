@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, type Country } from "../api";
+import { DestinationPicker } from "../components/DestinationPicker";
 import { countryName, formatPrice } from "../i18n";
+import { tripPath } from "./Home";
 import { Page, useLang } from "../layout";
 
 export function Countries() {
@@ -9,7 +11,9 @@ export function Countries() {
   const [params] = useSearchParams();
   const [countries, setCountries] = useState<Country[] | null>(null);
   const [error, setError] = useState(false);
-  const [filter, setFilter] = useState(params.get("q") ?? "");
+  const [filter] = useState(params.get("q") ?? "");
+  const [picked, setPicked] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.countries().then(setCountries).catch(() => setError(true));
@@ -25,11 +29,14 @@ export function Countries() {
     <Page>
       <h1 style={{ margin: "0 0 8px" }}>{t.countries.title}</h1>
       <p className="lead">{t.countries.lead}</p>
-      <div className="search" style={{ marginBottom: 28 }}>
-        <label htmlFor="filter" className="sr-only">
-          {t.hero.searchLabel}
-        </label>
-        <input id="filter" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t.hero.searchPlaceholder} />
+      <div style={{ marginBottom: 28 }}>
+        <DestinationPicker
+          countries={countries ?? []}
+          selected={picked}
+          onChange={setPicked}
+          onSubmit={() => picked.length && navigate(tripPath(lang, picked))}
+          submitLabel={t.hero.searchButton}
+        />
       </div>
       {error && <p className="error">{t.error}</p>}
       {!countries && !error && <p>{t.loading}</p>}

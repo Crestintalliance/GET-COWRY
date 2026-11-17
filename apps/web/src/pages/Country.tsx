@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api, type Plan } from "../api";
 import { countryName, formatData, formatPrice } from "../i18n";
 import { Page, useLang } from "../layout";
@@ -14,6 +14,7 @@ function featuredIndex(plans: Plan[]): number {
 export function Country() {
   const { lang, t } = useLang();
   const code = (useParams().code ?? "").toUpperCase();
+  const wanted = useSearchParams()[0].get("plan");
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -27,10 +28,11 @@ export function Country() {
       .then((p) => {
         setPlans(p);
         const f = featuredIndex(p);
-        setSelected(p[f >= 0 ? f : 0]?.planCode ?? null);
+        const pick = p.find((x) => x.planCode === wanted) ?? p[f >= 0 ? f : 0];
+        setSelected(pick?.planCode ?? null);
       })
       .catch(() => setError(t.error));
-  }, [code, t.error]);
+  }, [code, wanted, t.error]);
 
   const name = plans?.[0] ? countryName(code, plans[0].countryName, lang) : code;
   const network = plans?.[0]?.networks.map((n) => `${n.operator} ${n.type}`.trim()).join(", ");
