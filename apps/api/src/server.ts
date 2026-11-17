@@ -48,6 +48,6 @@ const app = createApp({
 
 app.listen(cfg.PORT, () => {
   console.info(
-    `Get Cowry API on http://localhost:${cfg.PORT} (supplier: ${cfg.SUPPLIER}, payments: ${useStripe ? "stripe" : "dev"}, db: ${cfg.DATABASE_URL ? "postgres" : "memory"})`,
+    `JoinCowry API on http://localhost:${cfg.PORT} (supplier: ${cfg.SUPPLIER}, payments: ${useStripe ? "stripe" : "dev"}, db: ${cfg.DATABASE_URL ? "postgres" : "memory"})`,
   );
 });

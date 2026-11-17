@@ -1,13 +1,13 @@
-# Get Cowry
+# JoinCowry
 
 Travel eSIMs for trips home to Africa. A product by Crest International Alliance LLC.
 
 - `apps/api`: the backend API that both the website and the mobile app use
-- `apps/web`: the getcowry.com store (React + Vite), English and French, Night Green design
+- `apps/web`: the joincowry.com store (React + Vite), English and French, Night Green design
 
 Open http://localhost:5173, pick a country and plan, enter any email, then press "Simulate payment" to get a test eSIM QR code. No card is charged until Stripe keys are added.
 
-Set `VITE_WHATSAPP_NUMBER` (international format, e.g. 15551234567) in `apps/web/.env` so the Help links open WhatsApp; without it they fall back to hello@getcowry.com.
+Set `VITE_WHATSAPP_NUMBER` (international format, e.g. 15551234567) in `apps/web/.env` so the Help links open WhatsApp; without it they fall back to hello@joincowry.com.
 
 ## What the API does
 
@@ -40,7 +40,7 @@ curl -X POST localhost:4000/api/dev/orders/<orderId>/pay
 curl "localhost:4000/api/orders/<orderId>?token=<token>"
 ```
 
-See [DEPLOY.md](DEPLOY.md) for putting the site online at getcowry.com.
+See [DEPLOY.md](DEPLOY.md) for putting the site online at joincowry.com.
 
 ## Going live, step by step
 
