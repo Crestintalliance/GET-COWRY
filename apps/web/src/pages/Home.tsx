@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
-import { countryName, formatPrice } from "../i18n";
+import { countryName, formatPrice, type Lang } from "../i18n";
 import { useLang } from "../layout";
+import { FEATURED, REGIONS, type Region } from "../regions";
 
 /** One country opens its page; several open the trip page with a section per country. */
 export function tripPath(lang: string, codes: string[]): string {
@@ -12,10 +13,8 @@ export function tripPath(lang: string, codes: string[]): string {
     : `/${lang}/trip?to=${codes.join(",").toLowerCase()}`;
 }
 
-/** Countries Cowry markets first. Shown on the home page when the supplier lists them. */
-const FEATURED = ["GN", "SN", "CI", "ML", "NG", "GH"];
 
-export function findCountry(query: string, countries: Country[], lang: "en" | "fr"): Country | undefined {
+export function findCountry(query: string, countries: Country[], lang: Lang): Country | undefined {
   const q = query.trim().toLowerCase();
   if (!q) return undefined;
   return countries.find(
@@ -37,9 +36,11 @@ export function Home() {
     api.countries().then(setCountries).catch(() => setCountries([]));
   }, []);
 
-  const featured = FEATURED.map((code) => countries.find((c) => c.countryCode === code)).filter(
-    (c): c is Country => Boolean(c),
-  );
+  const [region, setRegion] = useState<Region>("africa");
+  const pick = (r: Region) =>
+    FEATURED[r].map((code) => countries.find((c) => c.countryCode === code)).filter((c): c is Country => Boolean(c));
+  const tabs = REGIONS.filter((r) => pick(r).length > 0);
+  const featured = pick(tabs.includes(region) ? region : (tabs[0] ?? region));
 
   function onSearch() {
     if (!picked.length) return setHint(true);
@@ -79,6 +80,22 @@ export function Home() {
         <section className="container section">
           <h2>{t.popular.title}</h2>
           <p className="lead">{t.popular.lead}</p>
+          {tabs.length > 1 && (
+            <div className="tabs" role="tablist" aria-label={t.popular.title}>
+              {tabs.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  role="tab"
+                  aria-selected={r === region}
+                  className={r === region ? "tab active" : "tab"}
+                  onClick={() => setRegion(r)}
+                >
+                  {t.regions[r]}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="grid">
             {featured.map((c) => (
               <Link key={c.countryCode} to={`/${lang}/countries/${c.countryCode.toLowerCase()}`} className="country">

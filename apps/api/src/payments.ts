@@ -29,7 +29,8 @@ export class StripePayments implements PaymentProvider {
       {
         mode: "payment",
         customer_email: order.email,
-        locale: order.locale,
+        // Stripe uses Brazilian Portuguese for "pt-BR"; the other codes match.
+        locale: order.locale === "pt" ? "pt-BR" : order.locale,
         line_items: [
           {
             quantity: 1,

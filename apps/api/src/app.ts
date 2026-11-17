@@ -18,7 +18,7 @@ const CheckoutBody = z.object({
   countryCode: z.string().length(2),
   planCode: z.string().min(1).max(100),
   email: z.string().email().max(254),
-  locale: z.enum(["en", "fr"]).default("en"),
+  locale: z.enum(["en", "fr", "es", "pt", "de"]).default("en"),
 });
 
 const CountryParam = z.string().regex(/^[A-Za-z]{2}$/);

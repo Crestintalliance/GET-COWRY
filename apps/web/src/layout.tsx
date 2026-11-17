@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, type ReactNode } from "react";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import { DICTS, isLang, type Dict, type Lang } from "./i18n";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { DICTS, isLang, LANG_NAMES, LANGS, type Dict, type Lang } from "./i18n";
 
 interface LangCtx {
   lang: Lang;
@@ -29,8 +29,8 @@ export function LangLayout() {
   const queryLang = new URLSearchParams(search).get("lang") ?? undefined;
   const lang: Lang = isLang(params.lang) ? params.lang : isLang(queryLang) ? queryLang : "en";
   const t = DICTS[lang];
-  const other: Lang = lang === "en" ? "fr" : "en";
-  const switchTo = pathname.replace(/^\/(en|fr)/, `/${other}`) + search;
+  const navigate = useNavigate();
+  const pathFor = (to: Lang) => pathname.replace(new RegExp(`^/(${LANGS.join("|")})(?=/|$)`), `/${to}`) + search;
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -48,9 +48,16 @@ export function LangLayout() {
             <Link to={`/${lang}/countries`}>{t.nav.destinations}</Link>
             <Link to={`/${lang}/install`}>{t.nav.how}</Link>
             <a href={helpHref()}>{t.nav.help}</a>
-            <Link to={switchTo} hrefLang={other} lang={other}>
-              {t.nav.switchLang}
-            </Link>
+            <label className="lang-select">
+              <span className="sr-only">{t.nav.language}</span>
+              <select value={lang} onChange={(e) => navigate(pathFor(e.target.value as Lang))}>
+                {LANGS.map((l) => (
+                  <option key={l} value={l} lang={l}>
+                    {LANG_NAMES[l]}
+                  </option>
+                ))}
+              </select>
+            </label>
           </nav>
         </header>
       </div>
