@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { isLang, type Lang } from "./i18n";
 import { LangLayout } from "./layout";
 import { Countries } from "./pages/Countries";
 import { Country } from "./pages/Country";
@@ -10,8 +11,12 @@ import { Trip } from "./pages/Trip";
 import { DevPay, Install, Legal } from "./pages/Static";
 import "./styles.css";
 
-function preferredLang(): "en" | "fr" {
-  return navigator.language?.toLowerCase().startsWith("fr") ? "fr" : "en";
+function preferredLang(): Lang {
+  for (const tag of navigator.languages ?? [navigator.language]) {
+    const base = tag?.toLowerCase().slice(0, 2);
+    if (isLang(base)) return base;
+  }
+  return "en";
 }
 
 const router = createBrowserRouter([

@@ -7,7 +7,7 @@ export type OrderStatus =
   | "fulfilled" // eSIM issued and sent to the customer
   | "fulfillment_failed"; // paid but supplier failed: needs a refund or retry
 
-export type Locale = "en" | "fr";
+export type Locale = "en" | "fr" | "es" | "pt" | "de";
 
 export interface Order {
   id: string;

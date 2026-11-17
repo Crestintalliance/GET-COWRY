@@ -4,6 +4,7 @@ import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
 import { countryName, formatPrice } from "../i18n";
 import { tripPath } from "./Home";
+import { REGIONS, regionOf, type Region } from "../regions";
 import { Page, useLang } from "../layout";
 
 export function Countries() {
@@ -13,6 +14,7 @@ export function Countries() {
   const [error, setError] = useState(false);
   const [filter] = useState(params.get("q") ?? "");
   const [picked, setPicked] = useState<string[]>([]);
+  const [region, setRegion] = useState<Region | "all" | "other">("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +25,7 @@ export function Countries() {
   const shown = (countries ?? [])
     .map((c) => ({ ...c, label: countryName(c.countryCode, c.countryName, lang) }))
     .filter((c) => !q || c.label.toLowerCase().includes(q) || c.countryCode.toLowerCase() === q)
+    .filter((c) => region === "all" || (regionOf(c.countryCode) ?? "other") === region)
     .sort((a, b) => a.label.localeCompare(b.label, lang));
 
   return (
@@ -37,6 +40,19 @@ export function Countries() {
           onSubmit={() => picked.length && navigate(tripPath(lang, picked))}
           submitLabel={t.hero.searchButton}
         />
+      </div>
+      <div className="tabs" role="group" aria-label={t.countries.title}>
+        {(["all", ...REGIONS, "other"] as const).map((r) => (
+          <button
+            key={r}
+            type="button"
+            aria-pressed={r === region}
+            className={r === region ? "tab active" : "tab"}
+            onClick={() => setRegion(r)}
+          >
+            {t.regions[r]}
+          </button>
+        ))}
       </div>
       {error && <p className="error">{t.error}</p>}
       {!countries && !error && <p>{t.loading}</p>}

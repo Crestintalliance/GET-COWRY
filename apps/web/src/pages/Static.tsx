@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api";
+import { isLang } from "../i18n";
 import { helpHref, Page, useLang } from "../layout";
 
 export function Install() {
@@ -52,7 +53,8 @@ export function DevPay() {
   const [error, setError] = useState(false);
   const id = params.get("order") ?? "";
   const token = params.get("token") ?? "";
-  const lang = params.get("lang") === "fr" ? "fr" : "en";
+  const q = params.get("lang") ?? undefined;
+  const lang = isLang(q) ? q : "en";
 
   async function pay() {
     setBusy(true);

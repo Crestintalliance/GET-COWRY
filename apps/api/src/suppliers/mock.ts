@@ -13,6 +13,21 @@ const PLANS: SupplierPlan[] = [
   plan("GN", "Guinea", "GN-10GB-30D", 10, 30, 3864, [{ operator: "Orange", type: "4G" }]),
   plan("SN", "Senegal", "SN-5GB-30D", 5, 30, 1500, [{ operator: "Orange", type: "4G" }]),
   plan("CI", "Côte d'Ivoire", "CI-5GB-30D", 5, 30, 1600, [{ operator: "Orange", type: "4G" }]),
+  plan("ML", "Mali", "ML-5GB-30D", 5, 30, 2100, [{ operator: "Orange", type: "4G" }]),
+  plan("NG", "Nigeria", "NG-5GB-30D", 5, 30, 1400, [{ operator: "Airtel", type: "4G" }]),
+  plan("GH", "Ghana", "GH-5GB-30D", 5, 30, 900, [{ operator: "MTN", type: "4G" }]),
+  // Caribbean
+  plan("JM", "Jamaica", "JM-5GB-30D", 5, 30, 1100, [{ operator: "Digicel", type: "4G" }]),
+  plan("HT", "Haiti", "HT-5GB-30D", 5, 30, 1700, [{ operator: "Digicel", type: "4G" }]),
+  plan("DO", "Dominican Republic", "DO-5GB-30D", 5, 30, 800, [{ operator: "Claro", type: "4G" }]),
+  plan("TT", "Trinidad and Tobago", "TT-5GB-30D", 5, 30, 1200, [{ operator: "Digicel", type: "4G" }]),
+  plan("BB", "Barbados", "BB-5GB-30D", 5, 30, 1300, [{ operator: "Flow", type: "4G" }]),
+  // Latin America
+  plan("PA", "Panama", "PA-5GB-30D", 5, 30, 700, [{ operator: "Claro", type: "4G" }]),
+  plan("CO", "Colombia", "CO-5GB-30D", 5, 30, 600, [{ operator: "Claro", type: "4G" }]),
+  plan("BR", "Brazil", "BR-5GB-30D", 5, 30, 600, [{ operator: "Claro", type: "4G" }]),
+  plan("PE", "Peru", "PE-5GB-30D", 5, 30, 700, [{ operator: "Claro", type: "4G" }]),
+  plan("MX", "Mexico", "MX-5GB-30D", 5, 30, 600, [{ operator: "Telcel", type: "4G" }]),
   plan("FR", "France", "FR-5GB-30D", 5, 30, 400, [{ operator: "Orange", type: "5G" }]),
 ];
 

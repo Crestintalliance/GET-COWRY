@@ -146,3 +146,13 @@ img { max-width: 100%; }
 .trip-country h2 { margin: 0 0 16px; }
 .picker, .picker-list { text-align: left; }
 .trip-country .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+/* Region tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.tab { min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--white); font: inherit; font-weight: 600; cursor: pointer; }
+.tab:hover { border-color: var(--lime); color: var(--lime); }
+.tab.active { background: var(--lime); border-color: var(--lime); color: var(--night); }
+
+/* Language menu */
+.lang-select select { min-height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--night-2); color: var(--white); font: inherit; font-weight: 600; padding: 0 14px; cursor: pointer; }
+.lang-select select:hover, .lang-select select:focus-visible { border-color: var(--lime); }
