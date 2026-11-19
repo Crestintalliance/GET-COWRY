@@ -63,7 +63,7 @@ See [DEPLOY.md](DEPLOY.md) for putting the site online at joincowry.com.
 ## Known gaps (next steps)
 
 - Terms, refund and privacy pages are placeholders: write and review them before launch
-- The React Native app
+- The phone app lives in `apps/mobile` (Expo); see its README
 - Real email delivery of the QR code
 - Top-ups, and automatic refunds when the supplier fails (failed orders are flagged `fulfillment_failed` and logged for manual refund)
 - A second supplier, routed per country

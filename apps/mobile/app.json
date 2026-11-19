@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "JoinCowry",
+    "slug": "joincowry",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.crestintalliance.joincowry",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#06281C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.crestintalliance.joincowry"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-web-browser",
+      "expo-localization"
+    ],
+    "scheme": "joincowry",
+    "backgroundColor": "#06281C",
+    "extra": {
+      "apiUrl": "https://cowry-api.onrender.com",
+      "webUrl": "https://joincowry.com"
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
