@@ -1,2 +1,4 @@
 packages:
   - "apps/*"
+  # The Expo app has its own npm lockfile so Render builds of the API and website stay small.
+  - "!apps/mobile"

@@ -1,0 +1,371 @@
+import { getLocales } from "expo-localization";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export type Lang = "en" | "fr" | "es" | "pt" | "de";
+export const LANGS: Lang[] = ["en", "fr", "es", "pt", "de"];
+export const LANG_NAMES: Record<Lang, string> = { en: "English", fr: "Français", es: "Español", pt: "Português", de: "Deutsch" };
+const LOCALE: Record<Lang, string> = { en: "en-US", fr: "fr-FR", es: "es-419", pt: "pt-BR", de: "de-DE" };
+
+const en = {
+  tabs: { shop: "Destinations", esims: "My eSIMs" },
+  home: {
+    pill: "Travel eSIMs for Africa, the Caribbean and Latin America",
+    title1: "Touch down.",
+    title2: "Light up.",
+    search: "Add countries, e.g. Guinea",
+    find: "Find plans",
+    popular: "Popular trips home",
+    all: "All destinations",
+    pickOne: "Add at least one destination.",
+    noMatch: "No destination matches",
+    remove: "Remove",
+  },
+  regions: { all: "All", africa: "Africa", caribbean: "Caribbean", latam: "Latin America", other: "Rest of the world" },
+  from: "From",
+  country: {
+    days: "days",
+    popular: "Most popular",
+    network: "Network",
+    emailLabel: "Email for your eSIM",
+    emailHint: "We send your QR code and install guide here too.",
+    pay: "Continue to payment",
+    paying: "Opening payment…",
+    pickFirst: "Choose a plan first.",
+    badEmail: "Enter a valid email address.",
+    none: "No plans for this country yet.",
+    compat: "Your phone must support eSIM: most iPhones from XS and recent Android phones do.",
+  },
+  trip: { title: "Your trip", lead: "Choose a plan for each country. Each eSIM has its own payment for now.", buy: "Choose" },
+  order: {
+    title: "Your eSIM",
+    status: {
+      awaiting_payment: "Waiting for payment",
+      paid: "Payment received, getting your eSIM",
+      provisioning: "Getting your eSIM ready",
+      fulfilled: "Ready to install",
+      fulfillment_failed: "Something went wrong",
+    },
+    waiting: "This screen updates by itself. It usually takes under a minute.",
+    finishPayment: "Finish payment",
+    failed: "Your payment went through but we couldn't issue the eSIM. We'll refund you or send a new one. Contact us on WhatsApp.",
+    install: "Install eSIM on this phone",
+    installHint: "Opens your phone's eSIM setup with everything filled in. Do it at home on Wi-Fi.",
+    scan: "Or scan this QR code from another phone:",
+    manual: "Or enter these details by hand:",
+    smdp: "SM-DP+ address",
+    code: "Activation code",
+    copy: "Copy",
+    copied: "Copied",
+    roaming: "When you land, turn on data roaming for this eSIM.",
+    notFound: "Order not found.",
+  },
+  esims: { title: "My eSIMs", empty: "eSIMs you buy on this phone appear here.", shop: "Find an eSIM" },
+  language: "Language",
+  error: "Something went wrong. Please try again.",
+  retry: "Try again",
+  loading: "Loading…",
+};
+export type Dict = typeof en;
+
+const fr: Dict = {
+  tabs: { shop: "Destinations", esims: "Mes eSIM" },
+  home: {
+    pill: "eSIM de voyage pour l'Afrique, les Caraïbes et l'Amérique latine",
+    title1: "Vous atterrissez.",
+    title2: "Vous êtes connecté.",
+    search: "Ajoutez des pays, ex. Guinée",
+    find: "Voir les forfaits",
+    popular: "Retours au pays les plus courants",
+    all: "Toutes les destinations",
+    pickOne: "Ajoutez au moins une destination.",
+    noMatch: "Aucune destination ne correspond",
+    remove: "Retirer",
+  },
+  regions: { all: "Tout", africa: "Afrique", caribbean: "Caraïbes", latam: "Amérique latine", other: "Reste du monde" },
+  from: "Dès",
+  country: {
+    days: "jours",
+    popular: "Le plus choisi",
+    network: "Réseau",
+    emailLabel: "E-mail pour votre eSIM",
+    emailHint: "Nous y envoyons aussi votre QR code et le guide d'installation.",
+    pay: "Continuer vers le paiement",
+    paying: "Ouverture du paiement…",
+    pickFirst: "Choisissez d'abord un forfait.",
+    badEmail: "Saisissez une adresse e-mail valide.",
+    none: "Pas encore de forfait pour ce pays.",
+    compat: "Votre téléphone doit accepter l'eSIM : la plupart des iPhone depuis le XS et des Android récents le font.",
+  },
+  trip: { title: "Votre voyage", lead: "Choisissez un forfait par pays. Chaque eSIM se paie séparément pour l'instant.", buy: "Choisir" },
+  order: {
+    title: "Votre eSIM",
+    status: {
+      awaiting_payment: "En attente du paiement",
+      paid: "Paiement reçu, préparation de votre eSIM",
+      provisioning: "Préparation de votre eSIM",
+      fulfilled: "Prête à installer",
+      fulfillment_failed: "Un problème est survenu",
+    },
+    waiting: "Cet écran se met à jour tout seul. Cela prend en général moins d'une minute.",
+    finishPayment: "Terminer le paiement",
+    failed: "Votre paiement est passé mais nous n'avons pas pu émettre l'eSIM. Nous vous rembourserons ou en enverrons une nouvelle. Écrivez-nous sur WhatsApp.",
+    install: "Installer l'eSIM sur ce téléphone",
+    installHint: "Ouvre la configuration eSIM du téléphone avec tout déjà rempli. Faites-le chez vous, en Wi-Fi.",
+    scan: "Ou scannez ce QR code depuis un autre téléphone :",
+    manual: "Ou saisissez ces informations à la main :",
+    smdp: "Adresse SM-DP+",
+    code: "Code d'activation",
+    copy: "Copier",
+    copied: "Copié",
+    roaming: "À l'arrivée, activez l'itinérance des données pour cette eSIM.",
+    notFound: "Commande introuvable.",
+  },
+  esims: { title: "Mes eSIM", empty: "Les eSIM achetées sur ce téléphone apparaissent ici.", shop: "Trouver une eSIM" },
+  language: "Langue",
+  error: "Un problème est survenu. Veuillez réessayer.",
+  retry: "Réessayer",
+  loading: "Chargement…",
+};
+
+const es: Dict = {
+  tabs: { shop: "Destinos", esims: "Mis eSIM" },
+  home: {
+    pill: "eSIM de viaje para África, el Caribe y América Latina",
+    title1: "Aterrizas.",
+    title2: "Te conectas.",
+    search: "Añade países, p. ej. Panamá",
+    find: "Ver planes",
+    popular: "Viajes a casa más populares",
+    all: "Todos los destinos",
+    pickOne: "Añade al menos un destino.",
+    noMatch: "Ningún destino coincide",
+    remove: "Quitar",
+  },
+  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", other: "Resto del mundo" },
+  from: "Desde",
+  country: {
+    days: "días",
+    popular: "El más popular",
+    network: "Red",
+    emailLabel: "Correo para tu eSIM",
+    emailHint: "También te enviamos aquí el código QR y la guía de instalación.",
+    pay: "Continuar al pago",
+    paying: "Abriendo el pago…",
+    pickFirst: "Primero elige un plan.",
+    badEmail: "Escribe un correo válido.",
+    none: "Aún no hay planes para este país.",
+    compat: "Tu teléfono debe admitir eSIM: la mayoría de iPhone desde el XS y los Android recientes la admiten.",
+  },
+  trip: { title: "Tu viaje", lead: "Elige un plan para cada país. Por ahora cada eSIM tiene su propio pago.", buy: "Elegir" },
+  order: {
+    title: "Tu eSIM",
+    status: {
+      awaiting_payment: "Esperando el pago",
+      paid: "Pago recibido, preparando tu eSIM",
+      provisioning: "Preparando tu eSIM",
+      fulfilled: "Lista para instalar",
+      fulfillment_failed: "Algo salió mal",
+    },
+    waiting: "Esta pantalla se actualiza sola. Suele tardar menos de un minuto.",
+    finishPayment: "Terminar el pago",
+    failed: "Tu pago se realizó, pero no pudimos emitir la eSIM. Te devolveremos el dinero o te enviaremos otra. Escríbenos por WhatsApp.",
+    install: "Instalar la eSIM en este teléfono",
+    installHint: "Abre la configuración de eSIM del teléfono con todo completado. Hazlo en casa, con wifi.",
+    scan: "O escanea este código QR desde otro teléfono:",
+    manual: "O introduce estos datos a mano:",
+    smdp: "Dirección SM-DP+",
+    code: "Código de activación",
+    copy: "Copiar",
+    copied: "Copiado",
+    roaming: "Al aterrizar, activa la itinerancia de datos para esta eSIM.",
+    notFound: "Pedido no encontrado.",
+  },
+  esims: { title: "Mis eSIM", empty: "Las eSIM que compres en este teléfono aparecen aquí.", shop: "Buscar una eSIM" },
+  language: "Idioma",
+  error: "Algo salió mal. Inténtalo de nuevo.",
+  retry: "Reintentar",
+  loading: "Cargando…",
+};
+
+const pt: Dict = {
+  tabs: { shop: "Destinos", esims: "Meus eSIMs" },
+  home: {
+    pill: "eSIM de viagem para a África, o Caribe e a América Latina",
+    title1: "Pousou.",
+    title2: "Conectou.",
+    search: "Adicione países, ex. Brasil",
+    find: "Ver planos",
+    popular: "Viagens para casa mais procuradas",
+    all: "Todos os destinos",
+    pickOne: "Adicione pelo menos um destino.",
+    noMatch: "Nenhum destino encontrado",
+    remove: "Remover",
+  },
+  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", other: "Resto do mundo" },
+  from: "A partir de",
+  country: {
+    days: "dias",
+    popular: "Mais procurado",
+    network: "Rede",
+    emailLabel: "E-mail para seu eSIM",
+    emailHint: "Também enviamos aqui o QR code e o guia de instalação.",
+    pay: "Continuar para o pagamento",
+    paying: "Abrindo o pagamento…",
+    pickFirst: "Escolha um plano primeiro.",
+    badEmail: "Informe um e-mail válido.",
+    none: "Ainda não há planos para este país.",
+    compat: "Seu celular precisa aceitar eSIM: a maioria dos iPhone a partir do XS e dos Android recentes aceita.",
+  },
+  trip: { title: "Sua viagem", lead: "Escolha um plano para cada país. Por enquanto cada eSIM tem seu próprio pagamento.", buy: "Escolher" },
+  order: {
+    title: "Seu eSIM",
+    status: {
+      awaiting_payment: "Aguardando pagamento",
+      paid: "Pagamento recebido, preparando seu eSIM",
+      provisioning: "Preparando seu eSIM",
+      fulfilled: "Pronto para instalar",
+      fulfillment_failed: "Algo deu errado",
+    },
+    waiting: "Esta tela se atualiza sozinha. Normalmente leva menos de um minuto.",
+    finishPayment: "Concluir pagamento",
+    failed: "Seu pagamento foi aprovado, mas não conseguimos emitir o eSIM. Vamos reembolsar você ou enviar um novo. Fale com a gente pelo WhatsApp.",
+    install: "Instalar o eSIM neste celular",
+    installHint: "Abre a configuração de eSIM do celular já preenchida. Faça isso em casa, no Wi-Fi.",
+    scan: "Ou escaneie este QR code de outro celular:",
+    manual: "Ou digite estes dados manualmente:",
+    smdp: "Endereço SM-DP+",
+    code: "Código de ativação",
+    copy: "Copiar",
+    copied: "Copiado",
+    roaming: "Ao pousar, ative o roaming de dados neste eSIM.",
+    notFound: "Pedido não encontrado.",
+  },
+  esims: { title: "Meus eSIMs", empty: "Os eSIMs comprados neste celular aparecem aqui.", shop: "Encontrar um eSIM" },
+  language: "Idioma",
+  error: "Algo deu errado. Tente novamente.",
+  retry: "Tentar de novo",
+  loading: "Carregando…",
+};
+
+const de: Dict = {
+  tabs: { shop: "Reiseziele", esims: "Meine eSIMs" },
+  home: {
+    pill: "Reise-eSIMs für Afrika, die Karibik und Lateinamerika",
+    title1: "Landen.",
+    title2: "Online sein.",
+    search: "Länder hinzufügen, z. B. Ghana",
+    find: "Tarife ansehen",
+    popular: "Beliebte Reisen nach Hause",
+    all: "Alle Reiseziele",
+    pickOne: "Füge mindestens ein Reiseziel hinzu.",
+    noMatch: "Kein Reiseziel gefunden",
+    remove: "Entfernen",
+  },
+  regions: { all: "Alle", africa: "Afrika", caribbean: "Karibik", latam: "Lateinamerika", other: "Rest der Welt" },
+  from: "Ab",
+  country: {
+    days: "Tage",
+    popular: "Am beliebtesten",
+    network: "Netz",
+    emailLabel: "E-Mail für deine eSIM",
+    emailHint: "Hierhin schicken wir auch QR-Code und Installationsanleitung.",
+    pay: "Weiter zur Zahlung",
+    paying: "Zahlung wird geöffnet…",
+    pickFirst: "Wähle zuerst einen Tarif.",
+    badEmail: "Gib eine gültige E-Mail-Adresse ein.",
+    none: "Für dieses Land gibt es noch keine Tarife.",
+    compat: "Dein Handy muss eSIM unterstützen: Die meisten iPhones ab XS und neuere Android-Geräte tun das.",
+  },
+  trip: { title: "Deine Reise", lead: "Wähle für jedes Land einen Tarif. Vorerst hat jede eSIM ihre eigene Zahlung.", buy: "Wählen" },
+  order: {
+    title: "Deine eSIM",
+    status: {
+      awaiting_payment: "Warten auf Zahlung",
+      paid: "Zahlung erhalten, eSIM wird geholt",
+      provisioning: "eSIM wird vorbereitet",
+      fulfilled: "Bereit zur Installation",
+      fulfillment_failed: "Etwas ist schiefgelaufen",
+    },
+    waiting: "Dieser Bildschirm aktualisiert sich selbst. Meist dauert es unter einer Minute.",
+    finishPayment: "Zahlung abschließen",
+    failed: "Deine Zahlung ist eingegangen, aber wir konnten die eSIM nicht ausstellen. Wir erstatten den Betrag oder schicken eine neue. Schreib uns auf WhatsApp.",
+    install: "eSIM auf diesem Handy installieren",
+    installHint: "Öffnet die eSIM-Einrichtung deines Handys mit allen Angaben. Mach das zu Hause im WLAN.",
+    scan: "Oder scanne diesen QR-Code mit einem anderen Handy:",
+    manual: "Oder gib diese Daten von Hand ein:",
+    smdp: "SM-DP+-Adresse",
+    code: "Aktivierungscode",
+    copy: "Kopieren",
+    copied: "Kopiert",
+    roaming: "Schalte nach der Landung Datenroaming für diese eSIM ein.",
+    notFound: "Bestellung nicht gefunden.",
+  },
+  esims: { title: "Meine eSIMs", empty: "eSIMs, die du auf diesem Handy kaufst, erscheinen hier.", shop: "eSIM finden" },
+  language: "Sprache",
+  error: "Etwas ist schiefgelaufen. Bitte versuch es noch einmal.",
+  retry: "Erneut versuchen",
+  loading: "Wird geladen…",
+};
+
+export const DICTS: Record<Lang, Dict> = { en, fr, es, pt, de };
+
+function deviceLang(): Lang {
+  for (const l of getLocales()) {
+    const code = l.languageCode?.toLowerCase();
+    if (code && (LANGS as string[]).includes(code)) return code as Lang;
+  }
+  return "en";
+}
+
+const LANG_KEY = "cowry.lang";
+interface LangCtx {
+  lang: Lang;
+  t: Dict;
+  setLang: (l: Lang) => void;
+}
+const Ctx = createContext<LangCtx>({ lang: "en", t: en, setLang: () => undefined });
+export const useLang = () => useContext(Ctx);
+
+/** Starts in the phone's language; a choice made in the app is remembered. */
+export function LangProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>(deviceLang);
+  useEffect(() => {
+    AsyncStorage.getItem(LANG_KEY)
+      .then((v) => v && (LANGS as string[]).includes(v) && setLangState(v as Lang))
+      .catch(() => undefined);
+  }, []);
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    AsyncStorage.setItem(LANG_KEY, l).catch(() => undefined);
+  };
+  return <Ctx.Provider value={{ lang, t: DICTS[lang], setLang }}>{children}</Ctx.Provider>;
+}
+
+const NAMES = new Map<Lang, Intl.DisplayNames | null>();
+export function countryName(code: string, fallback: string, lang: Lang): string {
+  if (lang === "en") return fallback;
+  if (!NAMES.has(lang)) {
+    let dn: Intl.DisplayNames | null = null;
+    try {
+      dn = new Intl.DisplayNames([LOCALE[lang]], { type: "region" });
+    } catch {
+      dn = null;
+    }
+    NAMES.set(lang, dn);
+  }
+  try {
+    return NAMES.get(lang)?.of(code) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function formatPrice(cents: number, lang: Lang): string {
+  return new Intl.NumberFormat(LOCALE[lang], { style: "currency", currency: "USD" }).format(cents / 100);
+}
+
+export function formatData(bytes: number): string {
+  const gb = bytes / 1024 ** 3;
+  return gb >= 1 ? `${Number.isInteger(gb) ? gb : gb.toFixed(1)} GB` : `${Math.round(bytes / 1024 ** 2)} MB`;
+}
