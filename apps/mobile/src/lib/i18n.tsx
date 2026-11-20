@@ -100,6 +100,8 @@ const en = {
     },
   },
   plan: {
+    planOne: "plan",
+    planMany: "plans",
     hello: "Plan your trip",
     step1: "Choose your language",
     step2: "Where are you traveling?",
@@ -219,6 +221,8 @@ const fr: Dict = {
     },
   },
   plan: {
+    planOne: "forfait",
+    planMany: "forfaits",
     hello: "Préparez votre voyage",
     step1: "Choisissez votre langue",
     step2: "Où partez-vous ?",
@@ -337,6 +341,8 @@ const es: Dict = {
     },
   },
   plan: {
+    planOne: "plan",
+    planMany: "planes",
     hello: "Planea tu viaje",
     step1: "Elige tu idioma",
     step2: "¿A dónde viajas?",
@@ -455,6 +461,8 @@ const pt: Dict = {
     },
   },
   plan: {
+    planOne: "plano",
+    planMany: "planos",
     hello: "Planeje sua viagem",
     step1: "Escolha seu idioma",
     step2: "Para onde você vai?",
@@ -573,6 +581,8 @@ const de: Dict = {
     },
   },
   plan: {
+    planOne: "Tarif",
+    planMany: "Tarife",
     hello: "Plane deine Reise",
     step1: "Wähle deine Sprache",
     step2: "Wohin reist du?",
