@@ -6,7 +6,7 @@ import { flag } from "@/lib/flags";
 import { countryName, formatPrice, useLang } from "@/lib/i18n";
 import { colors } from "@/lib/theme";
 import type { Stop } from "@/lib/trip";
-import { PlanCard, featuredIndex } from "./PlanCard";
+import { PlanList } from "./PlanCard";
 import { Button } from "./ui";
 
 function CheckItem({
@@ -136,15 +136,7 @@ export function StopCard({ index, stop, onChange, onRemove }: { index: number; s
           open={esimOpen}
           onPress={plans?.length ? () => setEsimOpen((o) => !o) : undefined}
         >
-          {plans?.map((p, i) => (
-            <PlanCard
-              key={p.planCode}
-              plan={p}
-              selected={p.planCode === chosen}
-              popular={i === featuredIndex(plans)}
-              onPress={() => setChosen(p.planCode)}
-            />
-          ))}
+          {plans && <PlanList plans={plans} selected={chosen} onSelect={setChosen} />}
           {chosen && (
             <Button
               label={t.plan.choose}

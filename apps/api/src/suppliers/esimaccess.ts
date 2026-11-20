@@ -120,8 +120,33 @@ export function splitDailyCode(code: string): { packageCode: string; days?: numb
   return days ? { packageCode: packageCode!, days: Number(days) } : { packageCode: code };
 }
 
+/** "Global (120+ areas) 5GB 30Days" → "Global"; "Europe (30+ areas) 3GB" → "Europe". */
+export function regionName(planName: string): string {
+  if (/^global/i.test(planName)) return "Global";
+  return planName.replace(/\s*\(.*$/, "").replace(/\s+\d.*$/, "").trim() || planName;
+}
+
 export function mapPackage(p: ApiPackage): SupplierPlan {
   const loc = p.locationNetworkList?.[0];
+  const codes = (p.location ?? loc?.locationCode ?? "")
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter((c) => /^[A-Z]{2}$/.test(c));
+  if (codes.length > 1) {
+    const name = regionName(p.name);
+    return {
+      supplier: "esimaccess",
+      supplierPlanCode: p.packageCode,
+      countryCode: `R:ea-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+      countryName: name,
+      name: p.name,
+      dataBytes: p.volume,
+      validityDays: toDays(p.duration, p.durationUnit),
+      wholesaleCents: toCents(p.price),
+      networks: [{ operator: `${codes.length} countries`, type: "" }],
+      region: { name, coverage: codes },
+    };
+  }
   const countryCode = (loc?.locationCode ?? p.location ?? "").split(",")[0]!.trim().toUpperCase();
   const networks = (p.locationNetworkList ?? []).flatMap((l) =>
     (l.operatorList ?? []).map((o) => ({

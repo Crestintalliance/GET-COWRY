@@ -4,6 +4,8 @@ import type { SupplierAdapter, SupplierId } from "./suppliers/types.js";
 
 /** Cowry only lists plans that keep at least this much after wholesale and card fees. */
 export const MIN_NET_PROFIT_CENTS = 300;
+/** Nothing in the store costs more than this. */
+export const MAX_RETAIL_CENTS = 7500;
 const CACHE_MS = 10 * 60 * 1000;
 
 export interface CountrySummary {
@@ -22,6 +24,10 @@ export interface BetterValue {
 }
 
 const isRegional = (p: PricedPlan) => Boolean(p.region);
+
+/** A worldwide plan rather than a regional one: named global, or covering 50+ countries. */
+export const isGlobal = (p: PricedPlan) =>
+  Boolean(p.region) && (/global|world|discover/i.test(p.region!.name) || p.region!.coverage.length >= 50);
 
 export class CatalogService {
   private cache: { at: number; local: PricedPlan[]; regional: PricedPlan[] } | null = null;
@@ -56,7 +62,9 @@ export class CatalogService {
     const priced = bySupplier
       .flat()
       .map((p) => pricePlan(p, this.rule))
-      .filter((p) => p.netProfitCents >= MIN_NET_PROFIT_CENTS && !isBlocked(p.countryCode));
+      .filter(
+        (p) => p.netProfitCents >= MIN_NET_PROFIT_CENTS && p.retailCents <= MAX_RETAIL_CENTS && !isBlocked(p.countryCode),
+      );
 
     // Each country is sold by one supplier: its route if set and stocked, else the first that has it.
     const order = this.suppliers.map((s) => s.id);
@@ -130,6 +138,20 @@ export class CatalogService {
       }
     }
     return best;
+  }
+
+  /** Global (fixed-data) plans that work in this country, cheapest first, one per size and length. */
+  async globalFor(countryCode: string, limit = 4): Promise<PricedPlan[]> {
+    const seen = new Set<string>();
+    const out: PricedPlan[] = [];
+    for (const p of await this.regionalFor([countryCode])) {
+      if (!isGlobal(p) || p.unlimited) continue;
+      const key = `${p.dataBytes}/${p.validityDays}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(p);
+    }
+    return out.slice(0, limit);
   }
 
   /** A country plan, or a regional plan that covers the country. */

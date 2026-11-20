@@ -11,7 +11,8 @@ export function isLang(v: string | undefined): v is Lang {
 }
 
 const en = {
-  nav: { destinations: "Destinations", how: "How it works", help: "Help", language: "Language" },
+  nav: { destinations: "Destinations", how: "How it works", help: "Help", app: "Get the app", language: "Language" },
+  getApp: { title: "Get the JoinCowry app", body: "Your eSIMs, trip checklist and local guides, all in your pocket. Coming soon to iPhone and Android.", soon: "Coming soon" },
   hero: {
     pill: "Travel eSIMs for 200+ destinations",
     count: "Wherever home is, stay connected.",
@@ -51,7 +52,7 @@ const en = {
     choose: "Choose",
     chosen: "Selected",
     popular: "Most popular",
-    emailLabel: "Email for your eSIM",
+    emailLabel: "Email address",
     emailHint: "We send your QR code and install guide here.",
     pay: "Continue to payment",
     paying: "Opening payment…",
@@ -127,7 +128,8 @@ const en = {
 export type Dict = typeof en;
 
 const fr: Dict = {
-  nav: { destinations: "Destinations", how: "Comment ça marche", help: "Aide", language: "Langue" },
+  nav: { destinations: "Destinations", how: "Comment ça marche", help: "Aide", app: "L’app", language: "Langue" },
+  getApp: { title: "Téléchargez l'app JoinCowry", body: "Vos eSIM, votre checklist de voyage et des guides locaux, toujours dans votre poche. Bientôt sur iPhone et Android.", soon: "Bientôt" },
   hero: {
     pill: "eSIM de voyage pour plus de 200 destinations",
     count: "Où que soit chez vous, restez connecté.",
@@ -167,7 +169,7 @@ const fr: Dict = {
     choose: "Choisir",
     chosen: "Sélectionné",
     popular: "Le plus choisi",
-    emailLabel: "E-mail pour recevoir votre eSIM",
+    emailLabel: "Adresse e-mail",
     emailHint: "Nous y envoyons votre QR code et le guide d'installation.",
     pay: "Passer au paiement",
     paying: "Ouverture du paiement…",
@@ -242,7 +244,8 @@ const fr: Dict = {
 
 
 const es: Dict = {
-  nav: { destinations: "Destinos", how: "Cómo funciona", help: "Ayuda", language: "Idioma" },
+  nav: { destinations: "Destinos", how: "Cómo funciona", help: "Ayuda", app: "La app", language: "Idioma" },
+  getApp: { title: "Descarga la app JoinCowry", body: "Tus eSIM, la lista de tu viaje y guías locales, siempre en tu bolsillo. Muy pronto en iPhone y Android.", soon: "Muy pronto" },
   hero: {
     pill: "eSIM de viaje para más de 200 destinos",
     count: "Dondequiera que esté tu hogar, mantente conectado.",
@@ -282,7 +285,7 @@ const es: Dict = {
     choose: "Elegir",
     chosen: "Elegido",
     popular: "El más popular",
-    emailLabel: "Correo para tu eSIM",
+    emailLabel: "Correo electrónico",
     emailHint: "Aquí te enviamos el código QR y la guía de instalación.",
     pay: "Continuar al pago",
     paying: "Abriendo el pago…",
@@ -356,7 +359,8 @@ const es: Dict = {
 };
 
 const pt: Dict = {
-  nav: { destinations: "Destinos", how: "Como funciona", help: "Ajuda", language: "Idioma" },
+  nav: { destinations: "Destinos", how: "Como funciona", help: "Ajuda", app: "O app", language: "Idioma" },
+  getApp: { title: "Baixe o app JoinCowry", body: "Seus eSIMs, o checklist da viagem e guias locais, sempre no seu bolso. Em breve no iPhone e Android.", soon: "Em breve" },
   hero: {
     pill: "eSIM de viagem para mais de 200 destinos",
     count: "Onde quer que seja a sua casa, fique conectado.",
@@ -396,7 +400,7 @@ const pt: Dict = {
     choose: "Escolher",
     chosen: "Escolhido",
     popular: "Mais procurado",
-    emailLabel: "E-mail para seu eSIM",
+    emailLabel: "Endereço de e-mail",
     emailHint: "Enviamos aqui o QR code e o guia de instalação.",
     pay: "Continuar para o pagamento",
     paying: "Abrindo o pagamento…",
@@ -470,7 +474,8 @@ const pt: Dict = {
 };
 
 const de: Dict = {
-  nav: { destinations: "Reiseziele", how: "So funktioniert's", help: "Hilfe", language: "Sprache" },
+  nav: { destinations: "Reiseziele", how: "So funktioniert's", help: "Hilfe", app: "Die App", language: "Sprache" },
+  getApp: { title: "Hol dir die JoinCowry-App", body: "Deine eSIMs, Reise-Checkliste und lokale Guides immer dabei. Bald für iPhone und Android.", soon: "Bald verfügbar" },
   hero: {
     pill: "Reise-eSIMs für über 200 Reiseziele",
     count: "Wo auch immer dein Zuhause ist: bleib verbunden.",
@@ -510,7 +515,7 @@ const de: Dict = {
     choose: "Wählen",
     chosen: "Ausgewählt",
     popular: "Am beliebtesten",
-    emailLabel: "E-Mail für deine eSIM",
+    emailLabel: "E-Mail-Adresse",
     emailHint: "Hierhin schicken wir QR-Code und Installationsanleitung.",
     pay: "Weiter zur Zahlung",
     paying: "Zahlung wird geöffnet…",

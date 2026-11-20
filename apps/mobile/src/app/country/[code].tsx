@@ -3,7 +3,7 @@ import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, View } from "react-native";
 import { GuideView } from "@/components/GuideView";
-import { PlanCard, featuredIndex } from "@/components/PlanCard";
+import { PlanList, featuredIndex } from "@/components/PlanCard";
 import { Button, Chip, s } from "@/components/ui";
 import { api, type Plan } from "@/lib/api";
 import { countryName, useLang } from "@/lib/i18n";
@@ -79,15 +79,7 @@ export default function CountryScreen() {
         <>
         {!plans && !error && <Text style={s.body}>{t.loading}</Text>}
         {plans?.length === 0 && <Text style={s.body}>{t.country.none}</Text>}
-        {plans?.map((p, i) => (
-          <PlanCard
-            key={p.planCode}
-            plan={p}
-            selected={p.planCode === selected}
-            popular={i === featuredIndex(plans)}
-            onPress={() => setSelected(p.planCode)}
-          />
-        ))}
+        {plans && <PlanList plans={plans} selected={selected} onSelect={setSelected} />}
 
         {!!plans?.length && (
           <View style={{ gap: 8, marginTop: 12 }}>

@@ -8,10 +8,23 @@ export interface Unlimited {
   slowKbps?: number;
 }
 
-type Words = { title: string; perDay: string; dailyNote: string; fairUseNote: string };
+type Words = {
+  title: string;
+  perDay: string;
+  dailyNote: string;
+  fairUseNote: string;
+  globalTitle: string;
+  globalSub: string;
+  unlimitedTitle: string;
+  countries: string;
+};
 
 const WORDS: Record<Lang, Words> = {
   en: {
+    globalTitle: "Global plans",
+    globalSub: "One eSIM that works in many countries. Handy for trips with more than one stop.",
+    unlimitedTitle: "Unlimited plans",
+    countries: "Works in {n} countries",
     title: "Unlimited",
     perDay: "{gb} fast per day",
     dailyNote:
@@ -19,6 +32,10 @@ const WORDS: Record<Lang, Words> = {
     fairUseNote: "Unlimited under the network's fair-use policy: speed may be reduced after heavy use.",
   },
   fr: {
+    globalTitle: "Forfaits mondiaux",
+    globalSub: "Une seule eSIM pour plusieurs pays. Pratique pour les voyages avec plusieurs étapes.",
+    unlimitedTitle: "Forfaits illimités",
+    countries: "Fonctionne dans {n} pays",
     title: "Illimité",
     perDay: "{gb} en haut débit par jour",
     dailyNote:
@@ -27,6 +44,10 @@ const WORDS: Record<Lang, Words> = {
       "Illimité selon la politique d'usage raisonnable du réseau : la vitesse peut être réduite après une forte utilisation.",
   },
   es: {
+    globalTitle: "Planes globales",
+    globalSub: "Una sola eSIM para varios países. Ideal para viajes con varias paradas.",
+    unlimitedTitle: "Planes ilimitados",
+    countries: "Funciona en {n} países",
     title: "Ilimitado",
     perDay: "{gb} a alta velocidad por día",
     dailyNote:
@@ -34,6 +55,10 @@ const WORDS: Record<Lang, Words> = {
     fairUseNote: "Ilimitado según la política de uso justo de la red: la velocidad puede bajar tras un uso intensivo.",
   },
   pt: {
+    globalTitle: "Planos globais",
+    globalSub: "Um só eSIM para vários países. Ideal para viagens com várias paradas.",
+    unlimitedTitle: "Planos ilimitados",
+    countries: "Funciona em {n} países",
     title: "Ilimitado",
     perDay: "{gb} em alta velocidade por dia",
     dailyNote:
@@ -41,6 +66,10 @@ const WORDS: Record<Lang, Words> = {
     fairUseNote: "Ilimitado conforme a política de uso justo da rede: a velocidade pode ser reduzida após uso intenso.",
   },
   de: {
+    globalTitle: "Weltweite Tarife",
+    globalSub: "Eine eSIM für mehrere Länder. Praktisch für Reisen mit mehreren Stopps.",
+    unlimitedTitle: "Unbegrenzte Tarife",
+    countries: "Gilt in {n} Ländern",
     title: "Unbegrenzt",
     perDay: "{gb} Highspeed pro Tag",
     dailyNote:
@@ -71,4 +100,22 @@ export function unlimitedNote(u: Unlimited | undefined, lang: Lang): string | nu
   return w.dailyNote
     .replace("{gb}", formatData(u.highSpeedBytesPerDay))
     .replace("{speed}", speedText(u.slowKbps ?? 512));
+}
+
+/** Headings for the global and unlimited groups on a country's plan list. */
+export const groupWords = (lang: Lang) => {
+  const w = WORDS[lang];
+  return { globalTitle: w.globalTitle, globalSub: w.globalSub, unlimitedTitle: w.unlimitedTitle };
+};
+
+/** "Works in 117 countries", for global plans. */
+export const countriesText = (n: number, lang: Lang) => WORDS[lang].countries.replace("{n}", String(n));
+
+/** Country plans first, then global plans, then unlimited plans. */
+export function groupPlans<P extends { unlimited?: Unlimited; region?: unknown }>(plans: P[], global: P[] = []) {
+  return {
+    country: plans.filter((p) => !p.unlimited && !p.region),
+    global,
+    unlimited: plans.filter((p) => p.unlimited),
+  };
 }
