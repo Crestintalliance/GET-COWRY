@@ -2,6 +2,8 @@ import { createApp } from "./app.js";
 import { CatalogService } from "./catalog.js";
 import { loadConfig } from "./config.js";
 import { runMigrations } from "./db/migrate.js";
+import { GooglePlacesSearch } from "./guides/places.js";
+import { MemorySuggestionRepository, PgSuggestionRepository } from "./guides/suggestions.js";
 import { PgOrderRepository } from "./db/pgRepo.js";
 import { ConsoleNotifier } from "./notify.js";
 import { MemoryOrderRepository } from "./orders/memoryRepo.js";
@@ -25,11 +27,14 @@ const payments = useStripe
   : new DevPayments(cfg.PUBLIC_WEB_URL);
 
 let repo;
+let suggestions;
 if (cfg.DATABASE_URL) {
   await runMigrations(cfg.DATABASE_URL);
   repo = PgOrderRepository.fromUrl(cfg.DATABASE_URL);
+  suggestions = PgSuggestionRepository.fromUrl(cfg.DATABASE_URL);
 } else {
   repo = new MemoryOrderRepository();
+  suggestions = new MemorySuggestionRepository();
 }
 const orders = new OrderService(repo, catalog, suppliers, payments, new ConsoleNotifier(), cfg.PUBLIC_WEB_URL);
 
@@ -38,6 +43,9 @@ const app = createApp({
   orders,
   payments,
   devPayments: !useStripe && cfg.NODE_ENV !== "production",
+  nearby: cfg.GOOGLE_PLACES_API_KEY ? new GooglePlacesSearch(cfg.GOOGLE_PLACES_API_KEY) : undefined,
+  suggestions,
+  adminToken: cfg.ADMIN_TOKEN,
   corsOrigins: [
     new URL(cfg.PUBLIC_WEB_URL).origin,
     ...cfg.CORS_EXTRA_ORIGINS.split(",")
@@ -48,6 +56,6 @@ const app = createApp({
 
 app.listen(cfg.PORT, () => {
   console.info(
-    `JoinCowry API on http://localhost:${cfg.PORT} (supplier: ${cfg.SUPPLIER}, payments: ${useStripe ? "stripe" : "dev"}, db: ${cfg.DATABASE_URL ? "postgres" : "memory"})`,
+    `JoinCowry API on http://localhost:${cfg.PORT} (supplier: ${cfg.SUPPLIER}, payments: ${useStripe ? "stripe" : "dev"}, db: ${cfg.DATABASE_URL ? "postgres" : "memory"}, places: ${cfg.GOOGLE_PLACES_API_KEY ? "google" : "off"})`,
   );
 });

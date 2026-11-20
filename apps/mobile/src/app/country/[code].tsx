@@ -2,8 +2,9 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, View } from "react-native";
+import { GuideView } from "@/components/GuideView";
 import { PlanCard, featuredIndex } from "@/components/PlanCard";
-import { Button, s } from "@/components/ui";
+import { Button, Chip, s } from "@/components/ui";
 import { api, type Plan } from "@/lib/api";
 import { countryName, useLang } from "@/lib/i18n";
 import { saveEsim } from "@/lib/store";
@@ -12,7 +13,8 @@ import { colors } from "@/lib/theme";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CountryScreen() {
-  const params = useLocalSearchParams<{ code: string; plan?: string }>();
+  const params = useLocalSearchParams<{ code: string; plan?: string; tab?: string }>();
+  const [tab, setTab] = useState<"esim" | "guide">(params.tab === "guide" ? "guide" : "esim");
   const code = (params.code ?? "").toUpperCase();
   const { lang, t } = useLang();
   const [plans, setPlans] = useState<Plan[] | null>(null);
@@ -32,7 +34,7 @@ export default function CountryScreen() {
       .catch(() => setError(t.error));
   }, [code, params.plan, t.error]);
 
-  const name = plans?.[0] ? countryName(code, plans[0].countryName, lang) : code;
+  const name = countryName(code, plans?.[0]?.countryName ?? code, lang);
   const plan = plans?.find((p) => p.planCode === selected);
 
   async function pay() {
@@ -68,6 +70,13 @@ export default function CountryScreen() {
       <Stack.Screen options={{ title: name }} />
       <ScrollView contentContainerStyle={{ padding: 20, gap: 12, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
         <Text style={s.h1}>{name}</Text>
+        <View style={{ flexDirection: "row", gap: 8, marginBottom: 4 }}>
+          <Chip label={t.dest.esim} active={tab === "esim"} onPress={() => setTab("esim")} />
+          <Chip label={t.dest.guide} active={tab === "guide"} onPress={() => setTab("guide")} />
+        </View>
+        {tab === "guide" && <GuideView code={code} />}
+        {tab === "esim" && (
+        <>
         {!plans && !error && <Text style={s.body}>{t.loading}</Text>}
         {plans?.length === 0 && <Text style={s.body}>{t.country.none}</Text>}
         {plans?.map((p, i) => (
@@ -111,6 +120,8 @@ export default function CountryScreen() {
           </View>
         )}
         {error && !plans?.length && <Text style={s.error}>{error}</Text>}
+        </>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );

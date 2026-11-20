@@ -17,6 +17,12 @@ const EnvSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
 
+  // Google Places API key for restaurant and sight listings in destination guides (optional).
+  GOOGLE_PLACES_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+
+  // Password for the suggestion review screen (/admin on the website). Review is off when empty.
+  ADMIN_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(24).optional()),
+
   // Database. Leave empty to use the in-memory store (development only).
   DATABASE_URL: z.string().optional(),
 

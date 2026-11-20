@@ -28,3 +28,17 @@ export const orders = pgTable("orders", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Recommendations sent in by travelers. Shown in the guide only once approved. */
+export const suggestions = pgTable("suggestions", {
+  id: uuid("id").primaryKey(),
+  countryCode: text("country_code").notNull(),
+  category: text("category").notNull(),
+  name: text("name").notNull(),
+  area: text("area").notNull().default(""),
+  note: text("note").notNull().default(""),
+  submittedBy: text("submitted_by"),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+});
