@@ -2,16 +2,16 @@ import { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import type { Country } from "@/lib/api";
 import { flag } from "@/lib/flags";
-import { allCountryCodes, countryName, formatPrice, useLang } from "@/lib/i18n";
+import { allCountryCodes, countryName, useLang } from "@/lib/i18n";
 import { FEATURED } from "@/lib/regions";
 import { colors } from "@/lib/theme";
 import { s } from "./ui";
 
-/** Search box over a scrollable list of every country, with flags. Countries we sell eSIMs for show a price. */
+/** Search box over a scrollable list of every country, with flags. Countries we sell eSIMs for show how many plans there are. */
 export function CountryList({ sold, onPick }: { sold: Country[]; onPick: (code: string) => void }) {
   const { lang, t } = useLang();
   const [query, setQuery] = useState("");
-  const price = useMemo(() => new Map(sold.map((c) => [c.countryCode, c.fromCents])), [sold]);
+  const count = useMemo(() => new Map(sold.map((c) => [c.countryCode, c.planCount])), [sold]);
   const featured = useMemo(() => new Set([...FEATURED.africa, ...FEATURED.caribbean, ...FEATURED.latam]), []);
 
   const all = useMemo(
@@ -51,7 +51,7 @@ export function CountryList({ sold, onPick }: { sold: Country[]; onPick: (code: 
         <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
           {shown.length === 0 && <Text style={[s.small, { padding: 14 }]}>{t.home.noMatch}</Text>}
           {shown.map((c) => {
-            const from = price.get(c.code);
+            const n = count.get(c.code);
             return (
               <Pressable
                 key={c.code}
@@ -70,9 +70,9 @@ export function CountryList({ sold, onPick }: { sold: Country[]; onPick: (code: 
               >
                 <Text style={{ fontSize: 24 }}>{flag(c.code)}</Text>
                 <Text style={{ flex: 1, color: colors.white, fontSize: 16, fontWeight: "600" }}>{c.name}</Text>
-                {from !== undefined && (
+                {!!n && (
                   <Text style={s.small}>
-                    eSIM {formatPrice(from, lang)}
+                    {n} {n === 1 ? t.plan.planOne : t.plan.planMany}
                   </Text>
                 )}
               </Pressable>
