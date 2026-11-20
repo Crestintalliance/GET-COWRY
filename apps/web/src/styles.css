@@ -187,3 +187,6 @@ img { max-width: 100%; }
 
 /* Steps sit right under the hero, so they need less space above */
 .section.steps-section { padding-top: 24px; }
+
+.hero-copy .hero-cta { align-self: flex-start; min-height: 56px; padding: 14px 32px; font-size: 17px; }
+@media (max-width: 900px) { .hero-copy .hero-cta { align-self: center; } }

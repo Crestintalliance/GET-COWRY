@@ -29,6 +29,8 @@ const PLANS: SupplierPlan[] = [
   plan("PE", "Peru", "PE-5GB-30D", 5, 30, 700, [{ operator: "Claro", type: "4G" }]),
   plan("MX", "Mexico", "MX-5GB-30D", 5, 30, 600, [{ operator: "Telcel", type: "4G" }]),
   plan("FR", "France", "FR-5GB-30D", 5, 30, 400, [{ operator: "Orange", type: "5G" }]),
+  plan("DE", "Germany", "DE-5GB-30D", 5, 30, 300, [{ operator: "Vodafone", type: "5G" }]),
+  plan("US", "United States", "US-5GB-30D", 5, 30, 350, [{ operator: "T-Mobile", type: "5G" }]),
 ];
 
 function plan(
