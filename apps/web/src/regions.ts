@@ -17,9 +17,14 @@ export function regionOf(code: string): Region | null {
   return REGIONS.find((r) => SETS[r].has(code.toUpperCase())) ?? null;
 }
 
+/** Home page tabs: our three home regions, then where else the diaspora lives and travels. */
+export type HomeTab = Region | "world";
+export const HOME_TABS: HomeTab[] = ["africa", "caribbean", "latam", "world"];
+
 /** Shown first on the home page, in this order, when the supplier sells them. */
-export const FEATURED: Record<Region, string[]> = {
+export const FEATURED: Record<HomeTab, string[]> = {
   africa: ["GN", "SN", "CI", "ML", "NG", "GH"],
   caribbean: ["JM", "HT", "DO", "TT", "BB", "PR"],
   latam: ["PA", "CO", "BR", "MX", "PE", "AR"],
+  world: ["FR", "BE", "GB", "US", "CA", "ES", "DE", "IT"],
 };
