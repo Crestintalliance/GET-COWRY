@@ -13,9 +13,9 @@ export function isLang(v: string | undefined): v is Lang {
 const en = {
   nav: { destinations: "Destinations", how: "How it works", help: "Help", language: "Language" },
   hero: {
-    pill: "Travel eSIMs for Africa, the Caribbean and Latin America",
-    count: "{plans} eSIM plans for the trip home",
-    countSub: "In {countries} countries across Africa, the Caribbean and Latin America. Pick yours before you fly and switch it on when you land.",
+    pill: "Travel eSIMs for 200+ destinations",
+    count: "Wherever home is, stay connected.",
+    countSub: "Travel eSIMs for 200+ destinations, made for trips home to Africa, the Caribbean, Latin America and Europe. Pick yours before you fly, switch it on when you land.",
     title1: "Touch down.",
     title2: "Light up.",
     body: "Data for the trip home, ready before you board. Switch it on when you land and you're online.",
@@ -24,7 +24,7 @@ const en = {
     searchButton: "Find plans",
   },
   popular: { title: "Popular trips home", lead: "One eSIM, on local networks you already know.", all: "All countries" },
-  regions: { all: "All", africa: "Africa", caribbean: "Caribbean", latam: "Latin America", other: "Rest of the world" },
+  regions: { all: "All", africa: "Africa", caribbean: "Caribbean", latam: "Latin America", world: "Europe & more", other: "Rest of the world" },
   why: {
     title: "Made for the trip home",
     items: [
@@ -128,9 +128,9 @@ export type Dict = typeof en;
 const fr: Dict = {
   nav: { destinations: "Destinations", how: "Comment ça marche", help: "Aide", language: "Langue" },
   hero: {
-    pill: "eSIM de voyage pour l'Afrique, les Caraïbes et l'Amérique latine",
-    count: "{plans} forfaits eSIM pour rentrer au pays",
-    countSub: "Dans {countries} pays d'Afrique, des Caraïbes et d'Amérique latine. Choisissez avant de partir, activez à l'arrivée.",
+    pill: "eSIM de voyage pour plus de 200 destinations",
+    count: "Où que soit chez vous, restez connecté.",
+    countSub: "Des eSIM de voyage pour plus de 200 destinations, pensées pour rentrer en Afrique, aux Caraïbes, en Amérique latine et en Europe. Choisissez avant de partir, activez à l'arrivée.",
     title1: "Vous atterrissez.",
     title2: "Vous êtes connecté.",
     body: "Des données pour le retour au pays, prêtes avant l'embarquement. Activez-la à l'arrivée et vous êtes en ligne.",
@@ -139,7 +139,7 @@ const fr: Dict = {
     searchButton: "Voir les forfaits",
   },
   popular: { title: "Retours au pays les plus courants", lead: "Une eSIM, sur les réseaux locaux que vous connaissez.", all: "Tous les pays" },
-  regions: { all: "Tout", africa: "Afrique", caribbean: "Caraïbes", latam: "Amérique latine", other: "Reste du monde" },
+  regions: { all: "Tout", africa: "Afrique", caribbean: "Caraïbes", latam: "Amérique latine", world: "Europe et plus", other: "Reste du monde" },
   why: {
     title: "Pensé pour le retour au pays",
     items: [
@@ -242,9 +242,9 @@ const fr: Dict = {
 const es: Dict = {
   nav: { destinations: "Destinos", how: "Cómo funciona", help: "Ayuda", language: "Idioma" },
   hero: {
-    pill: "eSIM de viaje para África, el Caribe y América Latina",
-    count: "{plans} planes eSIM para el viaje a casa",
-    countSub: "En {countries} países de África, el Caribe y América Latina. Elige antes de volar y actívalo al aterrizar.",
+    pill: "eSIM de viaje para más de 200 destinos",
+    count: "Dondequiera que esté tu hogar, mantente conectado.",
+    countSub: "eSIM de viaje para más de 200 destinos, pensadas para volver a casa en África, el Caribe, América Latina y Europa. Elige antes de volar y actívala al aterrizar.",
     title1: "Aterrizas.",
     title2: "Te conectas.",
     body: "Datos para el viaje a casa, listos antes de embarcar. Actívala al aterrizar y ya estás en línea.",
@@ -253,7 +253,7 @@ const es: Dict = {
     searchButton: "Ver planes",
   },
   popular: { title: "Viajes a casa más populares", lead: "Una eSIM, en las redes locales que ya conoces.", all: "Todos los países" },
-  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", other: "Resto del mundo" },
+  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", world: "Europa y más", other: "Resto del mundo" },
   why: {
     title: "Pensada para el viaje a casa",
     items: [
@@ -355,9 +355,9 @@ const es: Dict = {
 const pt: Dict = {
   nav: { destinations: "Destinos", how: "Como funciona", help: "Ajuda", language: "Idioma" },
   hero: {
-    pill: "eSIM de viagem para a África, o Caribe e a América Latina",
-    count: "{plans} planos de eSIM para a viagem para casa",
-    countSub: "Em {countries} países da África, do Caribe e da América Latina. Escolha antes de voar e ative ao pousar.",
+    pill: "eSIM de viagem para mais de 200 destinos",
+    count: "Onde quer que seja a sua casa, fique conectado.",
+    countSub: "eSIM de viagem para mais de 200 destinos, feitos para voltar para casa na África, no Caribe, na América Latina e na Europa. Escolha antes de voar e ative ao pousar.",
     title1: "Pousou.",
     title2: "Conectou.",
     body: "Dados para a viagem para casa, prontos antes do embarque. Ative ao pousar e você já está online.",
@@ -366,7 +366,7 @@ const pt: Dict = {
     searchButton: "Ver planos",
   },
   popular: { title: "Viagens para casa mais procuradas", lead: "Um eSIM, nas redes locais que você já conhece.", all: "Todos os países" },
-  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", other: "Resto do mundo" },
+  regions: { all: "Todos", africa: "África", caribbean: "Caribe", latam: "América Latina", world: "Europa e mais", other: "Resto do mundo" },
   why: {
     title: "Feito para a viagem para casa",
     items: [
@@ -468,9 +468,9 @@ const pt: Dict = {
 const de: Dict = {
   nav: { destinations: "Reiseziele", how: "So funktioniert's", help: "Hilfe", language: "Sprache" },
   hero: {
-    pill: "Reise-eSIMs für Afrika, die Karibik und Lateinamerika",
-    count: "{plans} eSIM-Tarife für die Reise nach Hause",
-    countSub: "In {countries} Ländern in Afrika, der Karibik und Lateinamerika. Vor dem Flug wählen, bei der Landung einschalten.",
+    pill: "Reise-eSIMs für über 200 Reiseziele",
+    count: "Wo auch immer dein Zuhause ist: bleib verbunden.",
+    countSub: "Reise-eSIMs für über 200 Reiseziele, gemacht für die Reise nach Hause nach Afrika, in die Karibik, nach Lateinamerika und Europa. Vor dem Flug wählen, bei der Landung einschalten.",
     title1: "Landen.",
     title2: "Online sein.",
     body: "Daten für die Reise nach Hause, bereit vor dem Abflug. Bei der Landung einschalten, und du bist online.",
@@ -479,7 +479,7 @@ const de: Dict = {
     searchButton: "Tarife ansehen",
   },
   popular: { title: "Beliebte Reisen nach Hause", lead: "Eine eSIM, in den lokalen Netzen, die du kennst.", all: "Alle Länder" },
-  regions: { all: "Alle", africa: "Afrika", caribbean: "Karibik", latam: "Lateinamerika", other: "Rest der Welt" },
+  regions: { all: "Alle", africa: "Afrika", caribbean: "Karibik", latam: "Lateinamerika", world: "Europa & mehr", other: "Rest der Welt" },
   why: {
     title: "Gemacht für die Reise nach Hause",
     items: [

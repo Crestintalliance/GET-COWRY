@@ -6,7 +6,7 @@ import { Flag } from "../components/Flag";
 import { Globe } from "../components/Globe";
 import { countryName, type Lang } from "../i18n";
 import { useLang } from "../layout";
-import { FEATURED, REGIONS, type Region } from "../regions";
+import { FEATURED, HOME_TABS, type HomeTab } from "../regions";
 
 /** One country opens its page; several open the trip page with a section per country. */
 export function tripPath(lang: string, codes: string[]): string {
@@ -38,14 +38,11 @@ export function Home() {
     api.countries().then(setCountries).catch(() => setCountries([]));
   }, []);
 
-  const [region, setRegion] = useState<Region>("africa");
-  const pick = (r: Region) =>
+  const [region, setRegion] = useState<HomeTab>("africa");
+  const pick = (r: HomeTab) =>
     FEATURED[r].map((code) => countries.find((c) => c.countryCode === code)).filter((c): c is Country => Boolean(c));
-  const tabs = REGIONS.filter((r) => pick(r).length > 0);
+  const tabs = HOME_TABS.filter((r) => pick(r).length > 0);
   const featured = pick(tabs.includes(region) ? region : (tabs[0] ?? region));
-
-  const totalPlans = countries.reduce((n, c) => n + c.planCount, 0);
-  const fill = (text: string) => text.replace("{plans}", String(totalPlans)).replace("{countries}", String(countries.length));
 
   function onSearch() {
     if (!picked.length) return setHint(true);
@@ -59,19 +56,8 @@ export function Home() {
           <Globe />
         </div>
         <div className="hero-copy">
-        {totalPlans > 0 ? (
-          <>
-            <h1 className="count-title">{fill(t.hero.count)}</h1>
-            <p>{fill(t.hero.countSub)}</p>
-          </>
-        ) : (
-          <>
-            <h1>
-              {t.hero.title1} {t.hero.title2}
-            </h1>
-            <p>{t.hero.body}</p>
-          </>
-        )}
+        <h1 className="count-title">{t.hero.count}</h1>
+        <p>{t.hero.countSub}</p>
         <div role="search">
           <DestinationPicker
             countries={countries}

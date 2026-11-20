@@ -18,7 +18,7 @@ export const LOCALE: Record<Lang, string> = { en: "en-US", fr: "fr-FR", es: "es-
 const en = {
   tabs: { shop: "Destinations", esims: "My eSIMs" },
   home: {
-    pill: "Travel eSIMs for Africa, the Caribbean and Latin America",
+    pill: "Travel eSIMs for 200+ destinations",
     title1: "Touch down.",
     title2: "Light up.",
     search: "Add countries, e.g. Guinea",
@@ -139,7 +139,7 @@ export type Dict = typeof en;
 const fr: Dict = {
   tabs: { shop: "Destinations", esims: "Mes eSIM" },
   home: {
-    pill: "eSIM de voyage pour l'Afrique, les Caraïbes et l'Amérique latine",
+    pill: "eSIM de voyage pour plus de 200 destinations",
     title1: "Vous atterrissez.",
     title2: "Vous êtes connecté.",
     search: "Ajoutez des pays, ex. Guinée",
@@ -259,7 +259,7 @@ const fr: Dict = {
 const es: Dict = {
   tabs: { shop: "Destinos", esims: "Mis eSIM" },
   home: {
-    pill: "eSIM de viaje para África, el Caribe y América Latina",
+    pill: "eSIM de viaje para más de 200 destinos",
     title1: "Aterrizas.",
     title2: "Te conectas.",
     search: "Añade países, p. ej. Panamá",
@@ -379,7 +379,7 @@ const es: Dict = {
 const pt: Dict = {
   tabs: { shop: "Destinos", esims: "Meus eSIMs" },
   home: {
-    pill: "eSIM de viagem para a África, o Caribe e a América Latina",
+    pill: "eSIM de viagem para mais de 200 destinos",
     title1: "Pousou.",
     title2: "Conectou.",
     search: "Adicione países, ex. Brasil",
@@ -499,7 +499,7 @@ const pt: Dict = {
 const de: Dict = {
   tabs: { shop: "Reiseziele", esims: "Meine eSIMs" },
   home: {
-    pill: "Reise-eSIMs für Afrika, die Karibik und Lateinamerika",
+    pill: "Reise-eSIMs für über 200 Reiseziele",
     title1: "Landen.",
     title2: "Online sein.",
     search: "Länder hinzufügen, z. B. Ghana",
