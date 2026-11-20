@@ -657,7 +657,9 @@ export function countryName(code: string, fallback: string, lang: Lang): string 
 
 /** Every country code we can show, for the destination list. */
 export function allCountryCodes(): string[] {
-  return Object.keys(countries.getAlpha2Codes());
+  // Countries under US embargo aren't offered (see the API's sanctions list).
+  const blocked = new Set(["CU", "IR", "KP", "SY"]);
+  return Object.keys(countries.getAlpha2Codes()).filter((c) => !blocked.has(c));
 }
 
 export function formatPrice(cents: number, lang: Lang): string {

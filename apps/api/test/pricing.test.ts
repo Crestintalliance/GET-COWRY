@@ -33,3 +33,19 @@ describe("pricePlan", () => {
     expect(priced.netProfitCents).toBe(2499 - 1932 - 102);
   });
 });
+
+describe("sanctions", () => {
+  it("never lists embargoed countries", async () => {
+    const { CatalogService } = await import("../src/catalog.js");
+    const supplier = {
+      id: "mock" as const,
+      listPlans: async () => [
+        { supplierPlanCode: "CU-1", countryCode: "CU", countryName: "Cuba", name: "Cuba 5GB", dataBytes: 5e9, validityDays: 30, wholesaleCents: 500, networks: [] },
+        { supplierPlanCode: "GN-1", countryCode: "GN", countryName: "Guinea", name: "Guinea 5GB", dataBytes: 5e9, validityDays: 30, wholesaleCents: 500, networks: [] },
+      ],
+    };
+    const catalog = new CatalogService(supplier as never, { minProfitCents: 400, minMarkup: 1.25 });
+    expect((await catalog.countries()).map((c) => c.countryCode)).toEqual(["GN"]);
+    expect(await catalog.findPlan("CU", "CU-1")).toBeNull();
+  });
+});

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
-import { countryName, formatPrice, type Lang } from "../i18n";
+import { Bunting, CowryScatter, flag } from "../components/Festive";
+import { countryName, type Lang } from "../i18n";
 import { useLang } from "../layout";
 import { FEATURED, REGIONS, type Region } from "../regions";
 
@@ -42,6 +43,9 @@ export function Home() {
   const tabs = REGIONS.filter((r) => pick(r).length > 0);
   const featured = pick(tabs.includes(region) ? region : (tabs[0] ?? region));
 
+  const totalPlans = countries.reduce((n, c) => n + c.planCount, 0);
+  const fill = (text: string) => text.replace("{plans}", String(totalPlans)).replace("{countries}", String(countries.length));
+
   function onSearch() {
     if (!picked.length) return setHint(true);
     navigate(tripPath(lang, picked));
@@ -49,14 +53,24 @@ export function Home() {
 
   return (
     <>
-      <section className="container hero">
-        <span className="pill">{t.hero.pill}</span>
-        <h1>
-          {t.hero.title1}
-          <br />
-          <span>{t.hero.title2}</span>
-        </h1>
-        <p>{t.hero.body}</p>
+      <section className="hero-wrap">
+        <Bunting />
+        <CowryScatter />
+        <div className="container hero">
+        <p className="festive-note">{t.hero.festive}</p>
+        {totalPlans > 0 ? (
+          <>
+            <h1 className="count-title">{fill(t.hero.count)}</h1>
+            <p>{fill(t.hero.countSub)}</p>
+          </>
+        ) : (
+          <>
+            <h1>
+              {t.hero.title1} {t.hero.title2}
+            </h1>
+            <p>{t.hero.body}</p>
+          </>
+        )}
         <div role="search">
           <DestinationPicker
             countries={countries}
@@ -73,6 +87,7 @@ export function Home() {
               {t.picker.pickOne}
             </p>
           )}
+        </div>
         </div>
       </section>
 
@@ -99,11 +114,13 @@ export function Home() {
           <div className="grid">
             {featured.map((c) => (
               <Link key={c.countryCode} to={`/${lang}/countries/${c.countryCode.toLowerCase()}`} className="country">
-                <span className="code">{c.countryCode}</span>
+                <span className="flag" aria-hidden="true">
+                  {flag(c.countryCode)}
+                </span>
                 <span>
                   {countryName(c.countryCode, c.countryName, lang)}
                   <small>
-                    {t.countries.from} {formatPrice(c.fromCents, lang)}
+                    {c.planCount} {c.planCount === 1 ? t.countries.plan : t.countries.plans}
                   </small>
                 </span>
               </Link>

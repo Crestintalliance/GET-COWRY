@@ -1,4 +1,5 @@
 import { pricePlan, type PricedPlan, type PricingRule } from "./pricing.js";
+import { isBlocked } from "./sanctions.js";
 import type { SupplierAdapter } from "./suppliers/types.js";
 
 /** Cowry only lists plans that keep at least this much after wholesale and card fees. */
@@ -27,7 +28,7 @@ export class CatalogService {
     if (hit && this.now() - hit.at < CACHE_MS) return hit.plans;
     const plans = (await this.supplier.listPlans(key || undefined))
       .map((p) => pricePlan(p, this.rule))
-      .filter((p) => p.netProfitCents >= MIN_NET_PROFIT_CENTS)
+      .filter((p) => p.netProfitCents >= MIN_NET_PROFIT_CENTS && !isBlocked(p.countryCode))
       .sort((a, b) => a.retailCents - b.retailCents);
     this.cache.set(key, { at: this.now(), plans });
     return plans;

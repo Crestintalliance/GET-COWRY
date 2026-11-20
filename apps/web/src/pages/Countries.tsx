@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
-import { countryName, formatPrice } from "../i18n";
+import { flag } from "../components/Festive";
+import { countryName } from "../i18n";
 import { tripPath } from "./Home";
 import { REGIONS, regionOf, type Region } from "../regions";
 import { Page, useLang } from "../layout";
@@ -60,12 +61,13 @@ export function Countries() {
       <div className="grid">
         {shown.map((c) => (
           <Link key={c.countryCode} to={`/${lang}/countries/${c.countryCode.toLowerCase()}`} className="country">
-            <span className="code">{c.countryCode}</span>
+            <span className="flag" aria-hidden="true">
+              {flag(c.countryCode)}
+            </span>
             <span>
               {c.label}
               <small>
-                {t.countries.from} {formatPrice(c.fromCents, lang)} · {c.planCount}{" "}
-                {c.planCount === 1 ? t.countries.plan : t.countries.plans}
+                {c.planCount} {c.planCount === 1 ? t.countries.plan : t.countries.plans}
               </small>
             </span>
           </Link>
