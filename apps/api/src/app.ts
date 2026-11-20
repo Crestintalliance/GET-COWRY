@@ -57,6 +57,8 @@ function sameToken(given: string, expected: string): boolean {
 
 const NearbyQuery = z.object({
   kind: z.enum(["eat", "do"]).default("eat"),
+  /** City the traveler typed for this stop; falls back to the guide's main city. */
+  city: z.string().trim().max(80).optional(),
   lang: z.enum(["en", "fr", "es", "pt", "de"]).default("en"),
 });
 
@@ -191,7 +193,7 @@ export function createApp(deps: AppDeps) {
     if (!deps.nearby) return void res.json({ places: [], enabled: false });
     const cc = code.data.toUpperCase();
     const country = (await deps.catalog.countries()).find((c) => c.countryCode === cc);
-    const city = GUIDES[cc]?.city ?? country?.countryName;
+    const city = q.data.city || GUIDES[cc]?.city || country?.countryName;
     if (!city) return void res.json({ places: [], enabled: true });
     try {
       const places = await deps.nearby.search(city, country?.countryName ?? cc, q.data.kind, q.data.lang);

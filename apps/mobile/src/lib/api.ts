@@ -100,9 +100,9 @@ export const api = {
       body: JSON.stringify(body),
     }),
   guide: (code: string) => request<GuideResponse>(`/api/guides/${encodeURIComponent(code)}`),
-  nearby: (code: string, kind: "eat" | "do", lang: string) =>
+  nearby: (code: string, kind: "eat" | "do", lang: string, city?: string) =>
     request<{ places: NearbyPlace[]; enabled: boolean }>(
-      `/api/guides/${encodeURIComponent(code)}/nearby?kind=${kind}&lang=${lang}`,
+      `/api/guides/${encodeURIComponent(code)}/nearby?kind=${kind}&lang=${lang}${city ? `&city=${encodeURIComponent(city)}` : ""}`,
     ).then((r) => r.places),
   suggest: (
     code: string,

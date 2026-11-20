@@ -2,10 +2,12 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { LangProvider } from "@/lib/i18n";
 import { colors } from "@/lib/theme";
+import { TripProvider } from "@/lib/trip";
 
 export default function RootLayout() {
   return (
     <LangProvider>
+      <TripProvider>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -21,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="trip" options={{ title: "" }} />
         <Stack.Screen name="order/[id]" options={{ title: "" }} />
       </Stack>
+      </TripProvider>
     </LangProvider>
   );
 }

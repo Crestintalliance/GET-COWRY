@@ -1,11 +1,19 @@
 import { getLocales } from "expo-localization";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import countries from "i18n-iso-countries";
+import deNames from "i18n-iso-countries/langs/de.json";
+import enNames from "i18n-iso-countries/langs/en.json";
+import esNames from "i18n-iso-countries/langs/es.json";
+import frNames from "i18n-iso-countries/langs/fr.json";
+import ptNames from "i18n-iso-countries/langs/pt.json";
+
+for (const l of [enNames, frNames, esNames, ptNames, deNames]) countries.registerLocale(l);
 
 export type Lang = "en" | "fr" | "es" | "pt" | "de";
 export const LANGS: Lang[] = ["en", "fr", "es", "pt", "de"];
 export const LANG_NAMES: Record<Lang, string> = { en: "English", fr: "Français", es: "Español", pt: "Português", de: "Deutsch" };
-const LOCALE: Record<Lang, string> = { en: "en-US", fr: "fr-FR", es: "es-419", pt: "pt-BR", de: "de-DE" };
+export const LOCALE: Record<Lang, string> = { en: "en-US", fr: "fr-FR", es: "es-419", pt: "pt-BR", de: "de-DE" };
 
 const en = {
   tabs: { shop: "Destinations", esims: "My eSIMs" },
@@ -90,6 +98,34 @@ const en = {
       tooShort: "Add the name of the place.",
       cancel: "Cancel",
     },
+  },
+  plan: {
+    hello: "Plan your trip",
+    step1: "Choose your language",
+    step2: "Where are you traveling?",
+    step2Hint: "Type or scroll to pick a country. Add a stop for each country on your trip.",
+    stop: "Stop",
+    search: "Search countries",
+    city: "City (optional)",
+    change: "Change",
+    remove: "Remove stop",
+    addStop: "Add another stop",
+    selected: "You selected",
+    weHave: "Here's what we have for your trip:",
+    esim: "Travel eSIM",
+    esimDesc: "Get online the moment you land.",
+    esimNone: "No eSIM for this country yet.",
+    esimFrom: "Packages from",
+    choose: "Choose this package",
+    insurance: "Travel insurance",
+    insuranceDesc: "Coming soon.",
+    concierge: "Concierge: where to go",
+    conciergeDesc: "Places to eat, things to do and arrival tips.",
+    talk: "What people are saying",
+    talkSome: "picks from travelers",
+    talkNone: "Be the first to recommend a place.",
+    open: "Open",
+    soon: "Soon",
   },
   language: "Language",
   error: "Something went wrong. Please try again.",
@@ -182,6 +218,34 @@ const fr: Dict = {
       cancel: "Annuler",
     },
   },
+  plan: {
+    hello: "Préparez votre voyage",
+    step1: "Choisissez votre langue",
+    step2: "Où partez-vous ?",
+    step2Hint: "Tapez ou faites défiler pour choisir un pays. Ajoutez une étape par pays.",
+    stop: "Étape",
+    search: "Rechercher un pays",
+    city: "Ville (facultatif)",
+    change: "Changer",
+    remove: "Retirer l'étape",
+    addStop: "Ajouter une étape",
+    selected: "Vous avez choisi",
+    weHave: "Voici ce que nous avons pour votre voyage :",
+    esim: "eSIM de voyage",
+    esimDesc: "Connecté dès l'atterrissage.",
+    esimNone: "Pas encore d'eSIM pour ce pays.",
+    esimFrom: "Forfaits dès",
+    choose: "Choisir ce forfait",
+    insurance: "Assurance voyage",
+    insuranceDesc: "Bientôt disponible.",
+    concierge: "Conciergerie : où aller",
+    conciergeDesc: "Où manger, que faire et conseils d'arrivée.",
+    talk: "Ce que disent les voyageurs",
+    talkSome: "recommandations de voyageurs",
+    talkNone: "Soyez le premier à recommander un lieu.",
+    open: "Ouvrir",
+    soon: "Bientôt",
+  },
   language: "Langue",
   error: "Un problème est survenu. Veuillez réessayer.",
   retry: "Réessayer",
@@ -271,6 +335,34 @@ const es: Dict = {
       tooShort: "Escribe el nombre del lugar.",
       cancel: "Cancelar",
     },
+  },
+  plan: {
+    hello: "Planea tu viaje",
+    step1: "Elige tu idioma",
+    step2: "¿A dónde viajas?",
+    step2Hint: "Escribe o desliza para elegir un país. Añade una parada por cada país del viaje.",
+    stop: "Parada",
+    search: "Buscar países",
+    city: "Ciudad (opcional)",
+    change: "Cambiar",
+    remove: "Quitar parada",
+    addStop: "Añadir otra parada",
+    selected: "Elegiste",
+    weHave: "Esto es lo que tenemos para tu viaje:",
+    esim: "eSIM de viaje",
+    esimDesc: "Conéctate desde que aterrizas.",
+    esimNone: "Aún no hay eSIM para este país.",
+    esimFrom: "Paquetes desde",
+    choose: "Elegir este paquete",
+    insurance: "Seguro de viaje",
+    insuranceDesc: "Muy pronto.",
+    concierge: "Conserjería: a dónde ir",
+    conciergeDesc: "Dónde comer, qué hacer y consejos de llegada.",
+    talk: "Lo que dicen los viajeros",
+    talkSome: "recomendaciones de viajeros",
+    talkNone: "Sé el primero en recomendar un lugar.",
+    open: "Abrir",
+    soon: "Pronto",
   },
   language: "Idioma",
   error: "Algo salió mal. Inténtalo de nuevo.",
@@ -362,6 +454,34 @@ const pt: Dict = {
       cancel: "Cancelar",
     },
   },
+  plan: {
+    hello: "Planeje sua viagem",
+    step1: "Escolha seu idioma",
+    step2: "Para onde você vai?",
+    step2Hint: "Digite ou role para escolher um país. Adicione uma parada para cada país da viagem.",
+    stop: "Parada",
+    search: "Buscar países",
+    city: "Cidade (opcional)",
+    change: "Trocar",
+    remove: "Remover parada",
+    addStop: "Adicionar outra parada",
+    selected: "Você escolheu",
+    weHave: "Veja o que temos para sua viagem:",
+    esim: "eSIM de viagem",
+    esimDesc: "Conectado assim que pousar.",
+    esimNone: "Ainda não há eSIM para este país.",
+    esimFrom: "Pacotes a partir de",
+    choose: "Escolher este pacote",
+    insurance: "Seguro viagem",
+    insuranceDesc: "Em breve.",
+    concierge: "Concierge: aonde ir",
+    conciergeDesc: "Onde comer, o que fazer e dicas de chegada.",
+    talk: "O que os viajantes dizem",
+    talkSome: "dicas de viajantes",
+    talkNone: "Seja o primeiro a indicar um lugar.",
+    open: "Abrir",
+    soon: "Em breve",
+  },
   language: "Idioma",
   error: "Algo deu errado. Tente novamente.",
   retry: "Tentar de novo",
@@ -452,6 +572,34 @@ const de: Dict = {
       cancel: "Abbrechen",
     },
   },
+  plan: {
+    hello: "Plane deine Reise",
+    step1: "Wähle deine Sprache",
+    step2: "Wohin reist du?",
+    step2Hint: "Tippe oder scrolle, um ein Land zu wählen. Füge für jedes Land einen Stopp hinzu.",
+    stop: "Stopp",
+    search: "Länder suchen",
+    city: "Stadt (optional)",
+    change: "Ändern",
+    remove: "Stopp entfernen",
+    addStop: "Weiteren Stopp hinzufügen",
+    selected: "Du hast gewählt",
+    weHave: "Das haben wir für deine Reise:",
+    esim: "Reise-eSIM",
+    esimDesc: "Online ab der Landung.",
+    esimNone: "Für dieses Land gibt es noch keine eSIM.",
+    esimFrom: "Pakete ab",
+    choose: "Dieses Paket wählen",
+    insurance: "Reiseversicherung",
+    insuranceDesc: "Bald verfügbar.",
+    concierge: "Concierge: wohin gehen",
+    conciergeDesc: "Essen, Erlebnisse und Tipps für die Ankunft.",
+    talk: "Was Reisende sagen",
+    talkSome: "Tipps von Reisenden",
+    talkNone: "Empfiehl als Erste:r einen Ort.",
+    open: "Öffnen",
+    soon: "Bald",
+  },
   language: "Sprache",
   error: "Etwas ist schiefgelaufen. Bitte versuch es noch einmal.",
   retry: "Erneut versuchen",
@@ -492,24 +640,14 @@ export function LangProvider({ children }: { children: ReactNode }) {
   return <Ctx.Provider value={{ lang, t: DICTS[lang], setLang }}>{children}</Ctx.Provider>;
 }
 
-const NAMES = new Map<Lang, Intl.DisplayNames | null>();
-/** Country name in the app's language. English uses the supplier's name when there is one. */
+/** Country name in the app's language, from a bundled table (Intl.DisplayNames isn't available on every phone). */
 export function countryName(code: string, fallback: string, lang: Lang): string {
-  if (lang === "en" && fallback && fallback !== code) return fallback;
-  if (!NAMES.has(lang)) {
-    let dn: Intl.DisplayNames | null = null;
-    try {
-      dn = new Intl.DisplayNames([LOCALE[lang]], { type: "region" });
-    } catch {
-      dn = null;
-    }
-    NAMES.set(lang, dn);
-  }
-  try {
-    return NAMES.get(lang)?.of(code) ?? fallback;
-  } catch {
-    return fallback;
-  }
+  return countries.getName(code.toUpperCase(), lang) ?? (fallback || code);
+}
+
+/** Every country code we can show, for the destination list. */
+export function allCountryCodes(): string[] {
+  return Object.keys(countries.getAlpha2Codes());
 }
 
 export function formatPrice(cents: number, lang: Lang): string {

@@ -74,7 +74,7 @@ function Basic({ title, body, sources }: { title: string; body: string; sources:
 }
 
 /** Eat / Do / Go picks, traveler recommendations, Google listings, and arrival basics for one country. */
-export function GuideView({ code }: { code: string }) {
+export function GuideView({ code, city }: { code: string; city?: string }) {
   const { lang, t } = useLang();
   const [data, setData] = useState<GuideResponse | null>(null);
   const [error, setError] = useState(false);
@@ -91,13 +91,13 @@ export function GuideView({ code }: { code: string }) {
     if (!data?.nearbyEnabled) return;
     let live = true;
     api
-      .nearby(code, nearbyKind, lang)
+      .nearby(code, nearbyKind, lang, city)
       .then((p) => live && setNearby(p))
       .catch(() => live && setNearby([]));
     return () => {
       live = false;
     };
-  }, [code, nearbyKind, lang, data?.nearbyEnabled]);
+  }, [code, nearbyKind, lang, city, data?.nearbyEnabled]);
 
   if (error) return <Text style={s.error}>{t.error}</Text>;
   if (!data) return <Text style={s.body}>{t.loading}</Text>;
