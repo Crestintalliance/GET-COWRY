@@ -1,3 +1,4 @@
+import type { Unlimited } from "./unlimited";
 import Constants from "expo-constants";
 
 /** EXPO_PUBLIC_API_URL overrides app.json, e.g. to test against an API on your computer. */
@@ -23,6 +24,8 @@ export interface Plan {
   priceCents: number;
   currency: string;
   networks: { operator: string; type: string }[];
+  /** Set on unlimited plans; dataBytes is then 0. */
+  unlimited?: Unlimited;
 }
 
 export type OrderStatus = "awaiting_payment" | "paid" | "provisioning" | "fulfilled" | "fulfillment_failed";

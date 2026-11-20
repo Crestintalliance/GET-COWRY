@@ -29,6 +29,14 @@ export interface SupplierPlan {
    * countryCode is then a pseudo-code for the region and coverage lists the countries.
    */
   region?: { name: string; coverage: string[] };
+  /**
+   * Set on unlimited plans (dataBytes is then 0). With highSpeedBytesPerDay, the plan gets that much
+   * fast data each day, then slows to slowKbps until the next day ("daily unlimited"). Without it,
+   * the plan is unlimited under the network's fair-use policy.
+   */
+  unlimited?: { highSpeedBytesPerDay?: number; slowKbps?: number };
+  /** Daily plans are ordered per day: how many days this plan bundles. */
+  periodDays?: number;
 }
 
 export interface IssuedEsim {

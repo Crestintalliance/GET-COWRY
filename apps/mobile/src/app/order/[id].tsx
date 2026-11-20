@@ -83,7 +83,7 @@ export default function OrderScreen() {
 
   const lpa = order?.esim?.activationCode ?? null;
   const parts = lpa ? parseLpa(lpa) : null;
-  const title = saved ? `${countryName(saved.countryCode, saved.countryName, lang)} · ${formatData(saved.dataBytes)}` : t.order.title;
+  const title = saved ? `${countryName(saved.countryCode, saved.countryName, lang)} · ${(saved.dataBytes ? formatData(saved.dataBytes) : saved.planName)}` : t.order.title;
   const canInstall = Platform.OS === "ios" || Platform.OS === "android";
 
   return (

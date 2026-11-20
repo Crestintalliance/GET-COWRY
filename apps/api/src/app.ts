@@ -124,6 +124,7 @@ export function createApp(deps: AppDeps) {
     currency: "usd",
     networks: p.networks,
     ...(p.region ? { region: { name: p.region.name, countries: p.region.coverage } } : {}),
+    ...(p.unlimited ? { unlimited: p.unlimited } : {}),
   });
 
   // Country plans, plus a regional plan when one is genuinely better value.

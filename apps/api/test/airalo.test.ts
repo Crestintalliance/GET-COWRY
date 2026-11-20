@@ -38,12 +38,13 @@ const ITEMS: ApiItem[] = [
 ];
 
 describe("Airalo mapping", () => {
-  it("maps country and regional plans with recommended prices, skipping unlimited and top-ups", () => {
+  it("maps country, unlimited and regional plans with recommended prices, skipping top-ups", () => {
     const plans = mapItems(ITEMS);
-    expect(plans.map((p) => p.supplierPlanCode)).toEqual(["pa-5gb-30", "latam-5gb-30"]);
+    expect(plans.map((p) => p.supplierPlanCode)).toEqual(["pa-5gb-30", "pa-unl-7", "latam-5gb-30"]);
+    expect(plans[1]).toMatchObject({ dataBytes: 0, validityDays: 7, unlimited: {} });
     expect(plans[0]).toMatchObject({ countryCode: "PA", wholesaleCents: 2000, recommendedRetailCents: 3000, dataBytes: 5 * 1024 ** 3 });
     expect(plans[0]!.networks).toEqual([{ operator: "Tigo", type: "4G" }]);
-    expect(plans[1]!.region).toEqual({ name: "Latin America", coverage: ["PA", "CO", "CU"] });
+    expect(plans[2]!.region).toEqual({ name: "Latin America", coverage: ["PA", "CO", "CU"] });
   });
 
   it("builds the LPA activation code", () => {
@@ -96,7 +97,7 @@ describe("catalog with Airalo", () => {
   it("sells at Airalo's recommended price and routes countries to the chosen supplier", async () => {
     const catalog = new CatalogService([airalo, esimaccess], rule, Date.now, new Map([["GN", "esimaccess" as const]]));
     const pa = await catalog.plans("PA");
-    expect(pa.map((p) => [p.supplier, p.retailCents])).toEqual([["airalo", 3000]]);
+    expect(pa.map((p) => [p.supplier, p.retailCents])).toEqual([["airalo", 3000], ["airalo", 4000]]);
     expect((await catalog.plans("GN"))[0]!.supplier).toBe("esimaccess");
     expect((await catalog.countries()).map((c) => c.countryCode).sort()).toEqual(["GN", "PA"]);
   });

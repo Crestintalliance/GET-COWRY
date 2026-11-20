@@ -1,14 +1,17 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api, type Plan } from "../api";
-import { countryName, formatData, formatPrice } from "../i18n";
+import { countryName, formatPrice } from "../i18n";
 import { Page, useLang } from "../layout";
+import { dataTitle, perDayText, unlimitedNote } from "../unlimited";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** The middle plan is highlighted as "most popular" when there are three or more. */
+/** The middle fixed-data plan: what a family trip most often needs. Unlimited plans are never featured. */
 function featuredIndex(plans: Plan[]): number {
-  return plans.length >= 3 ? Math.floor(plans.length / 2) : -1;
+  const fixed = plans.map((p, i) => ({ p, i })).filter(({ p }) => !p.unlimited);
+  return fixed.length >= 3 ? fixed[Math.floor(fixed.length / 2)]!.i : -1;
 }
 
 export function Country() {
@@ -83,10 +86,12 @@ export function Country() {
                       className="sr-only"
                     />
                     <span className="tag">{featured ? t.country.popular : " "}</span>
-                    <span className="gb">{formatData(p.dataBytes)}</span>
+                    <span className="gb">{dataTitle(p, lang)}</span>
                     <span className="meta">
                       {p.validityDays} {t.country.days}
+                      {perDayText(p.unlimited, lang) ? ` · ${perDayText(p.unlimited, lang)}` : ""}
                     </span>
+                    {p.unlimited && <span className="plan-note">{unlimitedNote(p.unlimited, lang)}</span>}
                     <span className="price">{formatPrice(p.priceCents, lang)}</span>
                     <span className={`btn ${featured ? "btn-dark" : "btn-outline"}`} aria-hidden="true">
                       {isSel ? t.country.chosen : t.country.choose}

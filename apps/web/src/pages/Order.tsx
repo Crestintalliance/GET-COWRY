@@ -62,7 +62,7 @@ export function Order() {
     <Page>
       <h1 style={{ margin: "0 0 8px" }}>{t.order.title}</h1>
       <p className="lead">
-        {countryName(order.countryCode, order.countryCode, lang)} · {formatData(order.dataBytes)} · {order.validityDays}{" "}
+        {countryName(order.countryCode, order.countryCode, lang)} · {order.dataBytes ? formatData(order.dataBytes) : order.planName} · {order.validityDays}{" "}
         {t.country.days} · {formatPrice(order.retailCents, lang)}
       </p>
       <p>
