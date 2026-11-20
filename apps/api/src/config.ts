@@ -8,7 +8,12 @@ const EnvSchema = z.object({
   CORS_EXTRA_ORIGINS: z.string().default(""),
 
   // Which supplier fills orders: "mock" for local development, "esimaccess" for real eSIMs.
-  SUPPLIER: z.enum(["mock", "esimaccess"]).default("mock"),
+  SUPPLIER: z.enum(["mock", "esimaccess", "airalo"]).default("mock"),
+  /** Countries sold by a specific supplier, e.g. "GN:esimaccess,CI:esimaccess". Others use SUPPLIER. */
+  SUPPLIER_ROUTES: z.string().default(""),
+  AIRALO_BASE_URL: z.string().url().default("https://partners-api.airalo.com/v2"),
+  AIRALO_CLIENT_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  AIRALO_CLIENT_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   ESIMACCESS_BASE_URL: z.string().url().default("https://api.esimaccess.com/api/v1/open"),
   ESIMACCESS_ACCESS_CODE: z.string().optional(),
   ESIMACCESS_SECRET_KEY: z.string().optional(),
@@ -33,6 +38,18 @@ const EnvSchema = z.object({
 
 export type Config = z.infer<typeof EnvSchema>;
 
+/** "GN:esimaccess, CI:esimaccess" → Map { GN → esimaccess, CI → esimaccess }. */
+export function parseRoutes(value: string): Map<string, "mock" | "esimaccess" | "airalo"> {
+  const routes = new Map<string, "mock" | "esimaccess" | "airalo">();
+  for (const part of value.split(",")) {
+    const [cc, supplier] = part.split(":").map((x) => x.trim());
+    if (cc && /^[A-Za-z]{2}$/.test(cc) && (supplier === "mock" || supplier === "esimaccess" || supplier === "airalo")) {
+      routes.set(cc.toUpperCase(), supplier);
+    }
+  }
+  return routes;
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const parsed = EnvSchema.safeParse(env);
   if (!parsed.success) {
@@ -40,6 +57,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     throw new Error(`Invalid environment configuration:\n${issues}`);
   }
   const cfg = parsed.data;
+  if (cfg.SUPPLIER === "airalo" && !(cfg.AIRALO_CLIENT_ID && cfg.AIRALO_CLIENT_SECRET)) {
+    throw new Error("SUPPLIER=airalo requires AIRALO_CLIENT_ID and AIRALO_CLIENT_SECRET");
+  }
   if (cfg.SUPPLIER === "esimaccess" && !cfg.ESIMACCESS_ACCESS_CODE) {
     throw new Error("SUPPLIER=esimaccess requires ESIMACCESS_ACCESS_CODE");
   }

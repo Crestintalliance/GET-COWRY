@@ -3,7 +3,7 @@
  * wholesaler (eSIM Access today, others later) gets its own adapter file.
  */
 
-export type SupplierId = "mock" | "esimaccess";
+export type SupplierId = "mock" | "esimaccess" | "airalo";
 
 export interface Network {
   operator: string; // e.g. "Orange"
@@ -21,7 +21,14 @@ export interface SupplierPlan {
   validityDays: number;
   /** What Cowry pays the supplier, in US cents. */
   wholesaleCents: number;
+  /** The supplier's recommended selling price, in US cents, when it sets one (Airalo does). */
+  recommendedRetailCents?: number;
   networks: Network[];
+  /**
+   * Set on regional plans that work in several countries (e.g. "Latin America").
+   * countryCode is then a pseudo-code for the region and coverage lists the countries.
+   */
+  region?: { name: string; coverage: string[] };
 }
 
 export interface IssuedEsim {

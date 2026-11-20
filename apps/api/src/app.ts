@@ -1,6 +1,7 @@
 import express, { type NextFunction, type Request, type Response } from "express";
 import { z } from "zod";
 import type { CatalogService } from "./catalog.js";
+import type { PricedPlan } from "./pricing.js";
 import { GUIDES } from "./guides/content/index.js";
 import type { NearbySearch } from "./guides/places.js";
 import type { SuggestionRepository } from "./guides/suggestions.js";
@@ -112,23 +113,42 @@ export function createApp(deps: AppDeps) {
     res.json({ countries: await deps.catalog.countries() });
   });
 
+  const planView = (p: PricedPlan) => ({
+    planCode: p.supplierPlanCode,
+    countryCode: p.countryCode,
+    countryName: p.countryName,
+    name: p.name,
+    dataBytes: p.dataBytes,
+    validityDays: p.validityDays,
+    priceCents: p.retailCents,
+    currency: "usd",
+    networks: p.networks,
+    ...(p.region ? { region: { name: p.region.name, countries: p.region.coverage } } : {}),
+  });
+
+  // Country plans, plus a regional plan when one is genuinely better value.
   app.get("/api/countries/:code/plans", async (req, res) => {
     const code = CountryParam.safeParse(req.params.code);
     if (!code.success) return void res.status(400).json({ error: "Invalid country code" });
-    const plans = await deps.catalog.plans(code.data.toUpperCase());
+    const cc = code.data.toUpperCase();
+    const [plans, better] = await Promise.all([deps.catalog.plans(cc), deps.catalog.betterValue(cc)]);
     res.json({
-      plans: plans.map((p) => ({
-        planCode: p.supplierPlanCode,
-        countryCode: p.countryCode,
-        countryName: p.countryName,
-        name: p.name,
-        dataBytes: p.dataBytes,
-        validityDays: p.validityDays,
-        priceCents: p.retailCents,
-        currency: "usd",
-        networks: p.networks,
-      })),
+      plans: plans.map(planView),
+      betterValue: better
+        ? { plan: planView(better.plan), comparedTo: better.comparedTo.supplierPlanCode, savingsCents: better.savingsCents }
+        : null,
     });
+  });
+
+  // One eSIM for a whole trip: regional plans that cover every stop.
+  app.get("/api/trip-plans", async (req, res) => {
+    const to = String(req.query.to ?? "")
+      .split(",")
+      .map((c) => c.trim().toUpperCase())
+      .filter((c) => /^[A-Z]{2}$/.test(c));
+    if (to.length < 2 || to.length > 10) return void res.status(400).json({ error: "Give 2 to 10 country codes" });
+    const plans = await deps.catalog.regionalFor(to);
+    res.json({ plans: plans.slice(0, 6).map(planView) });
   });
 
   // Destination guide: personal picks, arrival basics, phrases and sights.
