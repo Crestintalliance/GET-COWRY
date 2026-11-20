@@ -7,6 +7,7 @@ import { MemoryOrderRepository } from "../src/orders/memoryRepo.js";
 import { OrderService } from "../src/orders/service.js";
 import { DevPayments } from "../src/payments.js";
 import { MockSupplier } from "../src/suppliers/mock.js";
+import { MemorySuggestionRepository } from "../src/guides/suggestions.js";
 import type { SupplierAdapter, SupplierId } from "../src/suppliers/types.js";
 
 function setup(supplier: SupplierAdapter = new MockSupplier()) {
@@ -16,7 +17,7 @@ function setup(supplier: SupplierAdapter = new MockSupplier()) {
   const payments = new DevPayments("http://web.test");
   const suppliers = new Map<SupplierId, SupplierAdapter>([[supplier.id, supplier]]);
   const orders = new OrderService(repo, catalog, suppliers, payments, notifier, "http://web.test");
-  const app = createApp({ catalog, orders, payments, devPayments: true });
+  const app = createApp({ catalog, orders, payments, devPayments: true, suggestions: new MemorySuggestionRepository() });
   return { app, repo, notifier, supplier };
 }
 

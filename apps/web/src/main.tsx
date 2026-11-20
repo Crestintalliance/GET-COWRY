@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { isLang, type Lang } from "./i18n";
 import { LangLayout } from "./layout";
+import { Admin } from "./pages/Admin";
 import { Countries } from "./pages/Countries";
 import { Country } from "./pages/Country";
 import { Home } from "./pages/Home";
@@ -25,6 +26,11 @@ const router = createBrowserRouter([
     path: "/dev-pay",
     element: <LangLayout />,
     children: [{ index: true, element: <DevPay /> }],
+  },
+  {
+    path: "/admin",
+    element: <LangLayout />,
+    children: [{ index: true, element: <Admin /> }],
   },
   {
     path: "/:lang",

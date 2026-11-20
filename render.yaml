@@ -27,7 +27,7 @@ services:
       - key: PUBLIC_WEB_URL
         value: https://joincowry.com
       - key: CORS_EXTRA_ORIGINS
-        value: https://www.joincowry.com,https://cowry-web.onrender.com
+        value: https://www.joincowry.com,https://cowry-web.onrender.com,https://cowry-app.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: cowry-db
@@ -41,6 +41,10 @@ services:
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: ADMIN_TOKEN # password for the recommendation review screen at joincowry.com/admin; 24+ characters
+        sync: false
+      - key: GOOGLE_PLACES_API_KEY # optional: restaurant and sight listings in guides
         sync: false
       - key: PRICE_MIN_PROFIT_USD
         value: "4"
@@ -72,3 +76,17 @@ services:
       - path: /*
         name: Referrer-Policy
         value: strict-origin-when-cross-origin
+
+  # Phone app preview in the browser: cowry-app.onrender.com (the real apps ship through the App Store and Google Play)
+  - type: web
+    name: cowry-app
+    runtime: static
+    buildCommand: cd apps/mobile && npm ci && npx expo export --platform web
+    staticPublishPath: apps/mobile/dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

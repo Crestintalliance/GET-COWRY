@@ -156,3 +156,9 @@ img { max-width: 100%; }
 /* Language menu */
 .lang-select select { min-height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--night-2); color: var(--white); font: inherit; font-weight: 600; padding: 0 14px; cursor: pointer; }
 .lang-select select:hover, .lang-select select:focus-visible { border-color: var(--lime); }
+
+/* Review screen */
+.admin-input { flex: 1; min-width: 220px; min-height: 48px; border-radius: 14px; border: 1px solid var(--line); background: var(--night-2); color: var(--white); font: inherit; padding: 0 14px; }
+.admin-card { background: var(--night-2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.admin-card p { margin: 4px 0; }
+.admin-meta { color: var(--mist); font-size: 14px; }

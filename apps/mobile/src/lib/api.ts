@@ -53,12 +53,62 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
+export interface GuidePick {
+  id?: string;
+  name: string;
+  category: "eat" | "do" | "go";
+  area: string;
+  note: string;
+  by?: string;
+  mapsUrl?: string;
+}
+
+export interface Guide {
+  country: string;
+  city: string;
+  asOf: string;
+  language: string;
+  picks: GuidePick[];
+  basics: { id: string; title: string; body: string; sources: string[] }[];
+  phrases: { en: string; local: string; language: string }[];
+  places: { name: string; category: "do" | "go"; area: string; summary: string; sources: string[] }[];
+}
+
+export interface GuideResponse {
+  guide: Guide | null;
+  community: GuidePick[];
+  nearbyEnabled: boolean;
+}
+
+export interface NearbyPlace {
+  id: string;
+  name: string;
+  address: string;
+  rating?: number;
+  ratingCount?: number;
+  type?: string;
+  mapsUrl: string;
+}
+
 export const api = {
   countries: () => request<{ countries: Country[] }>("/api/countries").then((r) => r.countries),
   plans: (code: string) =>
     request<{ plans: Plan[] }>(`/api/countries/${encodeURIComponent(code)}/plans`).then((r) => r.plans),
   checkout: (body: { countryCode: string; planCode: string; email: string; locale: string }) =>
     request<{ orderId: string; token: string; checkoutUrl: string }>("/api/checkout", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  guide: (code: string) => request<GuideResponse>(`/api/guides/${encodeURIComponent(code)}`),
+  nearby: (code: string, kind: "eat" | "do", lang: string) =>
+    request<{ places: NearbyPlace[]; enabled: boolean }>(
+      `/api/guides/${encodeURIComponent(code)}/nearby?kind=${kind}&lang=${lang}`,
+    ).then((r) => r.places),
+  suggest: (
+    code: string,
+    body: { category: "eat" | "do" | "go"; name: string; area: string; note: string; submittedBy?: string },
+  ) =>
+    request<{ ok: true }>(`/api/guides/${encodeURIComponent(code)}/suggestions`, {
       method: "POST",
       body: JSON.stringify(body),
     }),
