@@ -14,6 +14,9 @@ const en = {
   nav: { destinations: "Destinations", how: "How it works", help: "Help", language: "Language" },
   hero: {
     pill: "Travel eSIMs for Africa, the Caribbean and Latin America",
+    count: "{plans} eSIM plans for the trip home",
+    countSub: "In {countries} countries across Africa, the Caribbean and Latin America. Pick yours before you fly and switch it on when you land.",
+    festive: "Going home for the holidays? Sort your data before the December rush.",
     title1: "Touch down.",
     title2: "Light up.",
     body: "Data for the trip home, ready before you board. Switch it on when you land and you're online.",
@@ -127,6 +130,9 @@ const fr: Dict = {
   nav: { destinations: "Destinations", how: "Comment ça marche", help: "Aide", language: "Langue" },
   hero: {
     pill: "eSIM de voyage pour l'Afrique, les Caraïbes et l'Amérique latine",
+    count: "{plans} forfaits eSIM pour rentrer au pays",
+    countSub: "Dans {countries} pays d'Afrique, des Caraïbes et d'Amérique latine. Choisissez avant de partir, activez à l'arrivée.",
+    festive: "Vous rentrez pour les fêtes ? Prenez vos données avant la ruée de décembre.",
     title1: "Vous atterrissez.",
     title2: "Vous êtes connecté.",
     body: "Des données pour le retour au pays, prêtes avant l'embarquement. Activez-la à l'arrivée et vous êtes en ligne.",
@@ -239,6 +245,9 @@ const es: Dict = {
   nav: { destinations: "Destinos", how: "Cómo funciona", help: "Ayuda", language: "Idioma" },
   hero: {
     pill: "eSIM de viaje para África, el Caribe y América Latina",
+    count: "{plans} planes eSIM para el viaje a casa",
+    countSub: "En {countries} países de África, el Caribe y América Latina. Elige antes de volar y actívalo al aterrizar.",
+    festive: "¿Vuelves a casa por las fiestas? Asegura tus datos antes de la locura de diciembre.",
     title1: "Aterrizas.",
     title2: "Te conectas.",
     body: "Datos para el viaje a casa, listos antes de embarcar. Actívala al aterrizar y ya estás en línea.",
@@ -350,6 +359,9 @@ const pt: Dict = {
   nav: { destinations: "Destinos", how: "Como funciona", help: "Ajuda", language: "Idioma" },
   hero: {
     pill: "eSIM de viagem para a África, o Caribe e a América Latina",
+    count: "{plans} planos de eSIM para a viagem para casa",
+    countSub: "Em {countries} países da África, do Caribe e da América Latina. Escolha antes de voar e ative ao pousar.",
+    festive: "Vai para casa nas festas? Garanta seus dados antes da correria de dezembro.",
     title1: "Pousou.",
     title2: "Conectou.",
     body: "Dados para a viagem para casa, prontos antes do embarque. Ative ao pousar e você já está online.",
@@ -461,6 +473,9 @@ const de: Dict = {
   nav: { destinations: "Reiseziele", how: "So funktioniert's", help: "Hilfe", language: "Sprache" },
   hero: {
     pill: "Reise-eSIMs für Afrika, die Karibik und Lateinamerika",
+    count: "{plans} eSIM-Tarife für die Reise nach Hause",
+    countSub: "In {countries} Ländern in Afrika, der Karibik und Lateinamerika. Vor dem Flug wählen, bei der Landung einschalten.",
+    festive: "Über die Feiertage nach Hause? Sichere dir deine Daten vor dem Dezember-Ansturm.",
     title1: "Landen.",
     title2: "Online sein.",
     body: "Daten für die Reise nach Hause, bereit vor dem Abflug. Bei der Landung einschalten, und du bist online.",
