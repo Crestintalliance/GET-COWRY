@@ -13,7 +13,7 @@ import { colors } from "@/lib/theme";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CountryScreen() {
-  const params = useLocalSearchParams<{ code: string; plan?: string; tab?: string }>();
+  const params = useLocalSearchParams<{ code: string; plan?: string; tab?: string; city?: string }>();
   const [tab, setTab] = useState<"esim" | "guide">(params.tab === "guide" ? "guide" : "esim");
   const code = (params.code ?? "").toUpperCase();
   const { lang, t } = useLang();
@@ -74,7 +74,7 @@ export default function CountryScreen() {
           <Chip label={t.dest.esim} active={tab === "esim"} onPress={() => setTab("esim")} />
           <Chip label={t.dest.guide} active={tab === "guide"} onPress={() => setTab("guide")} />
         </View>
-        {tab === "guide" && <GuideView code={code} />}
+        {tab === "guide" && <GuideView code={code} city={params.city} />}
         {tab === "esim" && (
         <>
         {!plans && !error && <Text style={s.body}>{t.loading}</Text>}
