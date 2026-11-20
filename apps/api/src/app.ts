@@ -132,9 +132,14 @@ export function createApp(deps: AppDeps) {
     const code = CountryParam.safeParse(req.params.code);
     if (!code.success) return void res.status(400).json({ error: "Invalid country code" });
     const cc = code.data.toUpperCase();
-    const [plans, better] = await Promise.all([deps.catalog.plans(cc), deps.catalog.betterValue(cc)]);
+    const [plans, better, global] = await Promise.all([
+      deps.catalog.plans(cc),
+      deps.catalog.betterValue(cc),
+      deps.catalog.globalFor(cc),
+    ]);
     res.json({
       plans: plans.map(planView),
+      global: global.map(planView),
       betterValue: better
         ? { plan: planView(better.plan), comparedTo: better.comparedTo.supplierPlanCode, savingsCents: better.savingsCents }
         : null,

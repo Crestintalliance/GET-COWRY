@@ -20,6 +20,8 @@ export interface Plan {
   networks: { operator: string; type: string }[];
   /** Set on unlimited plans; dataBytes is then 0. */
   unlimited?: Unlimited;
+  /** Set on regional and global plans. */
+  region?: { name: string; countries: string[] };
 }
 
 export type OrderStatus = "awaiting_payment" | "paid" | "provisioning" | "fulfilled" | "fulfillment_failed";
@@ -54,6 +56,12 @@ export const api = {
   countries: () => request<{ countries: Country[] }>("/api/countries").then((r) => r.countries),
   plans: (code: string) =>
     request<{ plans: Plan[] }>(`/api/countries/${encodeURIComponent(code)}/plans`).then((r) => r.plans),
+  /** A country's own plans plus global plans that also work there. */
+  planSet: (code: string) =>
+    request<{ plans: Plan[]; global?: Plan[] }>(`/api/countries/${encodeURIComponent(code)}/plans`).then((r) => ({
+      plans: r.plans,
+      global: r.global ?? [],
+    })),
   checkout: (body: { countryCode: string; planCode: string; email: string; locale: string }) =>
     request<{ orderId: string; token: string; checkoutUrl: string }>("/api/checkout", {
       method: "POST",

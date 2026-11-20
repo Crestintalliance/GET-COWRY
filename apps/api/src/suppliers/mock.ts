@@ -7,6 +7,8 @@ const GB = 1024 ** 3;
  * Fake supplier for local development and tests. Prices are illustrative only,
  * loosely based on eSIM Access Guinea quotes seen in Nov 2026.
  */
+const GLOBAL_COVERAGE = ["FR", "DE", "GB", "BE", "ES", "IT", "US", "CA", "SN", "CI", "ML", "NG", "GH", "MA", "CM", "PA", "CO", "BR", "MX", "PE"];
+
 const PLANS: SupplierPlan[] = [
   plan("GN", "Guinea", "GN-3GB-30D", 3, 30, 1232, [{ operator: "Orange", type: "4G" }]),
   plan("GN", "Guinea", "GN-5GB-30D", 5, 30, 1932, [{ operator: "Orange", type: "4G" }]),
@@ -30,6 +32,9 @@ const PLANS: SupplierPlan[] = [
   plan("PE", "Peru", "PE-5GB-30D", 5, 30, 700, [{ operator: "Claro", type: "4G" }]),
   plan("MX", "Mexico", "MX-5GB-30D", 5, 30, 600, [{ operator: "Telcel", type: "4G" }]),
   plan("FR", "France", "FR-5GB-30D", 5, 30, 400, [{ operator: "Orange", type: "5G" }]),
+  global("GL-3GB-30D", 3, 30, 1140),
+  global("GL-5GB-30D", 5, 30, 1800),
+  global("GL-10GB-30D", 10, 30, 3400),
   { ...plan("FR", "France", "FR-UNL-7D", 0, 7, 700, [{ operator: "Orange", type: "5G" }]), name: "France unlimited 7 days", unlimited: {} },
   plan("DE", "Germany", "DE-5GB-30D", 5, 30, 300, [{ operator: "Vodafone", type: "5G" }]),
   plan("US", "United States", "US-5GB-30D", 5, 30, 350, [{ operator: "T-Mobile", type: "5G" }]),
@@ -51,6 +56,15 @@ function daily(
     name: `${countryName} daily unlimited, ${days} days`,
     unlimited: { highSpeedBytesPerDay: gbPerDay * GB, slowKbps },
     periodDays: days,
+  };
+}
+
+/** A worldwide plan. Like the real ones, it does not cover Guinea. */
+function global(code: string, gb: number, days: number, wholesaleCents: number): SupplierPlan {
+  return {
+    ...plan("R:global", "Global", code, gb, days, wholesaleCents, [{ operator: `${GLOBAL_COVERAGE.length} countries`, type: "" }]),
+    name: `Global ${gb}GB ${days} days`,
+    region: { name: "Global", coverage: GLOBAL_COVERAGE },
   };
 }
 

@@ -1,4 +1,4 @@
-import type { Unlimited } from "./unlimited";
+import { groupPlans, type Unlimited } from "./unlimited";
 import Constants from "expo-constants";
 
 /** EXPO_PUBLIC_API_URL overrides app.json, e.g. to test against an API on your computer. */
@@ -26,6 +26,8 @@ export interface Plan {
   networks: { operator: string; type: string }[];
   /** Set on unlimited plans; dataBytes is then 0. */
   unlimited?: Unlimited;
+  /** Set on regional and global plans. */
+  region?: { name: string; countries: string[] };
 }
 
 export type OrderStatus = "awaiting_payment" | "paid" | "provisioning" | "fulfilled" | "fulfillment_failed";
@@ -95,8 +97,12 @@ export interface NearbyPlace {
 
 export const api = {
   countries: () => request<{ countries: Country[] }>("/api/countries").then((r) => r.countries),
+  /** Country plans, then global plans that also work there, then unlimited plans. */
   plans: (code: string) =>
-    request<{ plans: Plan[] }>(`/api/countries/${encodeURIComponent(code)}/plans`).then((r) => r.plans),
+    request<{ plans: Plan[]; global?: Plan[] }>(`/api/countries/${encodeURIComponent(code)}/plans`).then((r) => {
+      const g = groupPlans(r.plans, r.global ?? []);
+      return [...g.country, ...g.global, ...g.unlimited];
+    }),
   checkout: (body: { countryCode: string; planCode: string; email: string; locale: string }) =>
     request<{ orderId: string; token: string; checkoutUrl: string }>("/api/checkout", {
       method: "POST",

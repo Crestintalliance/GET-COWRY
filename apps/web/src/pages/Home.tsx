@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
 import { Flag } from "../components/Flag";
@@ -44,6 +44,12 @@ export function Home() {
   const featured = POPULAR.map((code) => countries.find((c) => c.countryCode === code)).filter(
     (c): c is Country => Boolean(c),
   );
+
+  // "Get the app" in the menu links here; scroll once the page above it has its content.
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash === "#app") document.getElementById("app")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [hash, featured.length]);
 
   function onSearch() {
     if (!picked.length) return setHint(true);
@@ -116,6 +122,23 @@ export function Home() {
           </p>
         </section>
       )}
+
+      <section className="container section" id="app" aria-labelledby="app-title">
+        <div className="get-app">
+          <div>
+            <h2 id="app-title">{t.getApp.title}</h2>
+            <p>{t.getApp.body}</p>
+          </div>
+          <ul className="store-list">
+            {["iPhone", "Android"].map((store) => (
+              <li key={store} className="store-soon">
+                <strong>{store}</strong>
+                <span>{t.getApp.soon}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <section className="light">
         <div className="container section">

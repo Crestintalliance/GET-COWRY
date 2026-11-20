@@ -44,6 +44,15 @@ describe("catalog routes", () => {
     expect(res.body.plans[0]).not.toHaveProperty("wholesaleCents");
   });
 
+  it("offers global plans where they work, and nothing over $75", async () => {
+    const { app } = setup();
+    const sn = await request(app).get("/api/countries/sn/plans");
+    expect(sn.body.global.map((p: { region: { name: string } }) => p.region.name)).toEqual(["Global", "Global", "Global"]);
+    expect(sn.body.global.every((p: { priceCents: number }) => p.priceCents <= 7500)).toBe(true);
+    const gn = await request(app).get("/api/countries/gn/plans");
+    expect(gn.body.global).toEqual([]);
+  });
+
   it("rejects a bad country code", async () => {
     const { app } = setup();
     expect((await request(app).get("/api/countries/guinea/plans")).status).toBe(400);

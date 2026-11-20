@@ -48,6 +48,9 @@ export function LangLayout() {
             <Link to={`/${lang}/countries`}>{t.nav.destinations}</Link>
             <Link to={`/${lang}/install`}>{t.nav.how}</Link>
             <a href={helpHref()}>{t.nav.help}</a>
+            <Link to={{ pathname: `/${lang}`, hash: "app" }} className="nav-app">
+              {t.nav.app}
+            </Link>
             <label className="lang-select">
               <span className="sr-only">{t.nav.language}</span>
               <select value={lang} onChange={(e) => navigate(pathFor(e.target.value as Lang))}>

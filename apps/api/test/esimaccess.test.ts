@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { EsimAccessAdapter, mapDaily, mapPackage, parseKbps, signRequest, toCents } from "../src/suppliers/esimaccess.js";
+import { EsimAccessAdapter, mapDaily, mapPackage, parseKbps, regionName, signRequest, toCents } from "../src/suppliers/esimaccess.js";
 import { SupplierError } from "../src/suppliers/types.js";
 
 const guineaPackage = {
@@ -116,6 +116,12 @@ describe("EsimAccessAdapter", () => {
       amount: 39100 * 7,
       packageInfoList: [{ packageCode: "GN_1_Daily", count: 1, price: 39100, periodNum: 7 }],
     });
+  });
+
+  it("treats multi-country packages as regional plans", () => {
+    expect(regionName("Global (120+ areas) 5GB 30Days")).toBe("Global");
+    const p = mapPackage({ ...guineaPackage, packageCode: "GL5", name: "Global (120+ areas) 5GB 30Days", location: "FR,SN,US" });
+    expect(p).toMatchObject({ countryCode: "R:ea-global", region: { name: "Global", coverage: ["FR", "SN", "US"] } });
   });
 
   it("returns pending when the eSIM is not issued yet", async () => {

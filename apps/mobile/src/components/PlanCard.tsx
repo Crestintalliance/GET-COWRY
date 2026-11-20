@@ -2,7 +2,7 @@ import { Pressable, Text, View } from "react-native";
 import type { Plan } from "@/lib/api";
 import { formatPrice, useLang } from "@/lib/i18n";
 import { colors } from "@/lib/theme";
-import { dataTitle, perDayText, unlimitedNote } from "@/lib/unlimited";
+import { countriesText, dataTitle, groupPlans, groupWords, perDayText, unlimitedNote } from "@/lib/unlimited";
 
 export function PlanCard({ plan, selected, popular, onPress }: { plan: Plan; selected: boolean; popular?: boolean; onPress: () => void }) {
   const { lang, t } = useLang();
@@ -31,7 +31,8 @@ export function PlanCard({ plan, selected, popular, onPress }: { plan: Plan; sel
         <Text style={{ color: colors.mist, fontSize: 14 }}>
           {plan.validityDays} {t.country.days}
           {perDay ? ` · ${perDay}` : ""}
-          {network ? ` · ${network}` : ""}
+          {plan.region ? ` · ${countriesText(plan.region.countries.length, lang)}` : ""}
+          {network && !plan.region ? ` · ${network}` : ""}
         </Text>
         {note && (
           <Text
@@ -59,8 +60,45 @@ export function PlanCard({ plan, selected, popular, onPress }: { plan: Plan; sel
   );
 }
 
-/** The plan a family trip most often needs: the middle fixed-data plan. Unlimited plans are never featured. */
+/** The plan a family trip most often needs: the middle country plan. Global and unlimited plans are never featured. */
 export function featuredIndex(plans: Plan[]): number {
-  const fixed = plans.map((p, i) => ({ p, i })).filter(({ p }) => !p.unlimited);
+  const fixed = plans.map((p, i) => ({ p, i })).filter(({ p }) => !p.unlimited && !p.region);
   return fixed.length >= 3 ? fixed[Math.floor(fixed.length / 2)]!.i : -1;
+}
+
+/** Country plans, then "Global plans" and "Unlimited plans" under their own headings. */
+export function PlanList({ plans, selected, onSelect }: { plans: Plan[]; selected: string | null; onSelect: (code: string) => void }) {
+  const { lang } = useLang();
+  const words = groupWords(lang);
+  const g = groupPlans(
+    plans.filter((p) => !p.region),
+    plans.filter((p) => p.region && !p.unlimited),
+  );
+  const featured = featuredIndex(plans);
+  const card = (p: Plan) => (
+    <PlanCard
+      key={p.planCode}
+      plan={p}
+      selected={p.planCode === selected}
+      popular={plans.indexOf(p) === featured}
+      onPress={() => onSelect(p.planCode)}
+    />
+  );
+  const heading = (title: string, sub?: string) => (
+    <View style={{ marginTop: 16, gap: 2 }}>
+      <Text accessibilityRole="header" style={{ color: colors.white, fontSize: 20, fontWeight: "800" }}>
+        {title}
+      </Text>
+      {sub && <Text style={{ color: colors.mist, fontSize: 14 }}>{sub}</Text>}
+    </View>
+  );
+  return (
+    <View style={{ gap: 12 }}>
+      {g.country.map(card)}
+      {g.global.length > 0 && heading(words.globalTitle, words.globalSub)}
+      {g.global.map(card)}
+      {g.unlimited.length > 0 && heading(words.unlimitedTitle)}
+      {g.unlimited.map(card)}
+    </View>
+  );
 }
