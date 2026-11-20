@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { Button, s } from "@/components/ui";
 import { api, type Plan } from "@/lib/api";
-import { countryName, formatData, formatPrice, useLang } from "@/lib/i18n";
+import { countryName, formatPrice, useLang } from "@/lib/i18n";
+import { dataTitle, unlimitedNote } from "@/lib/unlimited";
 import { colors } from "@/lib/theme";
 
 export default function TripScreen() {
@@ -43,10 +44,11 @@ export default function TripScreen() {
                   style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 18, backgroundColor: colors.night2, borderWidth: 1, borderColor: colors.line }}
                 >
                   <View style={{ flex: 1 }}>
-                    <Text style={{ color: colors.white, fontSize: 18, fontWeight: "800" }}>{formatData(p.dataBytes)}</Text>
+                    <Text style={{ color: colors.white, fontSize: 18, fontWeight: "800" }}>{dataTitle(p, lang)}</Text>
                     <Text style={s.small}>
                       {p.validityDays} {t.country.days} · {formatPrice(p.priceCents, lang)}
                     </Text>
+                    {p.unlimited && <Text style={[s.small, { marginTop: 4 }]}>{unlimitedNote(p.unlimited, lang)}</Text>}
                   </View>
                   <Button
                     label={t.trip.buy}

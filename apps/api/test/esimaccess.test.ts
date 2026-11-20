@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { EsimAccessAdapter, mapPackage, signRequest, toCents } from "../src/suppliers/esimaccess.js";
+import { EsimAccessAdapter, mapDaily, mapPackage, parseKbps, signRequest, toCents } from "../src/suppliers/esimaccess.js";
 import { SupplierError } from "../src/suppliers/types.js";
 
 const guineaPackage = {
@@ -97,6 +97,24 @@ describe("EsimAccessAdapter", () => {
     expect(JSON.parse(calls[1]!.init.body as string)).toEqual({
       transactionId: "order-1",
       packageInfoList: [{ packageCode: "PKG-GN-5", count: 1, price: 193200 }],
+    });
+  });
+
+  it("sells daily plans in day bundles and orders them per day", async () => {
+    const dailyPkg = { ...guineaPackage, packageCode: "GN_1_Daily", name: "Guinea 1GB/Day", price: 39100, volume: 1024 ** 3, duration: 1, dataType: 2, fupPolicy: "512 Kbps" };
+    const plans = mapDaily(dailyPkg);
+    expect(plans.map((p) => p.supplierPlanCode)).toEqual(["GN_1_Daily@7", "GN_1_Daily@14", "GN_1_Daily@30"]);
+    expect(plans[0]).toMatchObject({ dataBytes: 0, validityDays: 7, wholesaleCents: 391 * 7, unlimited: { highSpeedBytesPerDay: 1024 ** 3, slowKbps: 512 } });
+    expect(parseKbps("1 Mbps")).toBe(1000);
+    const { adapter, calls } = adapterWith([
+      jsonResponse({ success: true, obj: { orderNo: "D1" } }),
+      jsonResponse({ success: true, obj: { esimList: [] } }),
+    ]);
+    await adapter.placeOrder({ plan: plans[0]!, idempotencyKey: "d-1" });
+    expect(JSON.parse(calls[0]!.init.body as string)).toEqual({
+      transactionId: "d-1",
+      amount: 39100 * 7,
+      packageInfoList: [{ packageCode: "GN_1_Daily", count: 1, price: 39100, periodNum: 7 }],
     });
   });
 

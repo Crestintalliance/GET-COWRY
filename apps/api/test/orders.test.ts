@@ -34,13 +34,13 @@ describe("catalog routes", () => {
     const { app } = setup();
     const res = await request(app).get("/api/countries");
     const guinea = res.body.countries.find((c: { countryCode: string }) => c.countryCode === "GN");
-    expect(guinea).toMatchObject({ countryName: "Guinea", fromCents: 1699, planCount: 3 });
+    expect(guinea).toMatchObject({ countryName: "Guinea", fromCents: 1699, planCount: 4 });
   });
 
   it("lists plans for a country, cheapest first", async () => {
     const { app } = setup();
     const res = await request(app).get("/api/countries/gn/plans");
-    expect(res.body.plans.map((p: { priceCents: number }) => p.priceCents)).toEqual([1699, 2499, 4899]);
+    expect(res.body.plans.map((p: { priceCents: number }) => p.priceCents)).toEqual([1699, 2499, 3499, 4899]);
     expect(res.body.plans[0]).not.toHaveProperty("wholesaleCents");
   });
 

@@ -121,6 +121,7 @@ export class CatalogService {
     let best: BetterValue | null = null;
     for (const r of regional) {
       for (const l of local) {
+        if (r.unlimited || l.unlimited) continue;
         if (r.dataBytes < l.dataBytes || r.validityDays < l.validityDays || r.retailCents >= l.retailCents) continue;
         const savingsCents = l.retailCents - r.retailCents;
         if (!best || savingsCents > best.savingsCents || (savingsCents === best.savingsCents && r.retailCents < best.plan.retailCents)) {

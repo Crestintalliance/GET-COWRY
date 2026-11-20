@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, type Country, type Plan } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
-import { countryName, formatData, formatPrice } from "../i18n";
+import { countryName, formatPrice } from "../i18n";
 import { Page, useLang } from "../layout";
+import { dataTitle, perDayText, unlimitedNote } from "../unlimited";
 
 export function parseTrip(value: string | null): string[] {
   return [...new Set((value ?? "").split(",").map((c) => c.trim().toUpperCase()).filter((c) => /^[A-Z]{2}$/.test(c)))];
@@ -69,10 +70,12 @@ export function Trip() {
               <div className="grid">
                 {list.map((p) => (
                   <div className="plan" key={p.planCode}>
-                    <span className="gb">{formatData(p.dataBytes)}</span>
+                    <span className="gb">{dataTitle(p, lang)}</span>
                     <span className="meta">
                       {p.validityDays} {t.country.days}
+                      {perDayText(p.unlimited, lang) ? ` · ${perDayText(p.unlimited, lang)}` : ""}
                     </span>
+                    {p.unlimited && <span className="plan-note">{unlimitedNote(p.unlimited, lang)}</span>}
                     <span className="price">{formatPrice(p.priceCents, lang)}</span>
                     <button
                       type="button"

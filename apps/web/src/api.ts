@@ -1,3 +1,4 @@
+import type { Unlimited } from "./unlimited";
 const BASE = import.meta.env.VITE_API_URL ?? "";
 
 export interface Country {
@@ -17,6 +18,8 @@ export interface Plan {
   priceCents: number;
   currency: string;
   networks: { operator: string; type: string }[];
+  /** Set on unlimited plans; dataBytes is then 0. */
+  unlimited?: Unlimited;
 }
 
 export type OrderStatus = "awaiting_payment" | "paid" | "provisioning" | "fulfilled" | "fulfillment_failed";

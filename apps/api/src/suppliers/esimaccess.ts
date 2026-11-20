@@ -54,6 +54,10 @@ export interface ApiPackage {
   duration: number;
   durationUnit?: string;
   location?: string;
+  /** 1 = data in total, 2 = daily (a set amount of fast data per day, then slowed). */
+  dataType?: number;
+  /** Speed after the daily fast data is used, e.g. "512 Kbps" or "1 Mbps". */
+  fupPolicy?: string;
   locationNetworkList?: ApiLocationNetwork[];
 }
 interface ApiEsim {
@@ -81,6 +85,39 @@ export function toCents(apiPrice: number): number {
 
 function toDays(duration: number, unit?: string): number {
   return unit && unit.toUpperCase().startsWith("MONTH") ? duration * 30 : duration;
+}
+
+/** "512 Kbps" → 512, "1 Mbps" → 1000. */
+export function parseKbps(s?: string): number | undefined {
+  const m = s?.match(/([\d.]+)\s*(k|m)bps/i);
+  if (!m) return undefined;
+  return Math.round(Number(m[1]) * (m[2]!.toLowerCase() === "m" ? 1000 : 1));
+}
+
+/** How many days we sell a daily plan for. eSIM Access prices daily plans per day. */
+export const DAILY_BUNDLES = [7, 14, 30];
+const DAILY_SEP = "@";
+
+export const isDaily = (p: ApiPackage) => p.dataType === 2 || /\/day/i.test(p.name);
+
+/** A daily plan becomes one plan per bundle length, e.g. "GN_1_Daily@14". */
+export function mapDaily(p: ApiPackage): SupplierPlan[] {
+  const base = mapPackage(p);
+  return DAILY_BUNDLES.map((days) => ({
+    ...base,
+    supplierPlanCode: `${p.packageCode}${DAILY_SEP}${days}`,
+    name: `${base.countryName} daily unlimited, ${days} days`,
+    dataBytes: 0,
+    validityDays: days,
+    wholesaleCents: toCents(p.price) * days,
+    unlimited: { highSpeedBytesPerDay: p.volume, slowKbps: parseKbps(p.fupPolicy) ?? 512 },
+    periodDays: days,
+  }));
+}
+
+export function splitDailyCode(code: string): { packageCode: string; days?: number } {
+  const [packageCode, days] = code.split(DAILY_SEP);
+  return days ? { packageCode: packageCode!, days: Number(days) } : { packageCode: code };
 }
 
 export function mapPackage(p: ApiPackage): SupplierPlan {
@@ -172,14 +209,17 @@ export class EsimAccessAdapter implements SupplierAdapter {
     });
     const packages = obj.packageList ?? [];
     for (const p of packages) this.priceByCode.set(p.packageCode, p.price);
-    return packages.map(mapPackage);
+    return packages.flatMap((p) => (isDaily(p) ? mapDaily(p) : [mapPackage(p)]));
   }
 
   async placeOrder({ plan, idempotencyKey }: PlaceOrderInput): Promise<PlaceOrderResult> {
-    const price = this.priceByCode.get(plan.supplierPlanCode) ?? plan.wholesaleCents * 100;
+    const { packageCode, days } = splitDailyCode(plan.supplierPlanCode);
+    // Daily plans: unit price per day, with periodNum days. Check this against the sandbox.
+    const price = this.priceByCode.get(packageCode) ?? Math.round((plan.wholesaleCents * 100) / (days ?? 1));
     const obj = await this.call<{ orderNo: string }>("/esim/order", {
       transactionId: idempotencyKey,
-      packageInfoList: [{ packageCode: plan.supplierPlanCode, count: 1, price }],
+      ...(days ? { amount: price * days } : {}),
+      packageInfoList: [{ packageCode, count: 1, price, ...(days ? { periodNum: days } : {}) }],
     });
     const esim = await this.getOrderEsim(obj.orderNo).catch(() => null);
     return esim

@@ -78,6 +78,8 @@ img { max-width: 100%; }
 .plan .gb { font-size: 42px; font-weight: 800; line-height: 1.1; }
 .plan .meta { color: var(--mist); font-size: 15px; }
 .plan.featured .meta { color: var(--ink-soft); }
+.plan .plan-note { font-size: 13px; line-height: 1.45; color: var(--mist); border-left: 3px solid var(--lime); padding-left: 10px; }
+.plan.featured .plan-note { color: var(--ink-soft); border-left-color: var(--night); }
 .plan .price { font-size: 26px; font-weight: 700; }
 .plan.selected { outline: 3px solid var(--white); }
 

@@ -47,7 +47,7 @@ export default function MyEsims() {
             <View style={{ flex: 1 }}>
               <Text style={{ color: colors.white, fontSize: 16, fontWeight: "700" }}>{countryName(e.countryCode, e.countryName, lang)}</Text>
               <Text style={s.small}>
-                {formatData(e.dataBytes)} · {e.validityDays} {t.country.days} · {new Date(e.createdAt).toLocaleDateString(lang)}
+                {(e.dataBytes ? formatData(e.dataBytes) : e.planName)} · {e.validityDays} {t.country.days} · {new Date(e.createdAt).toLocaleDateString(lang)}
               </Text>
             </View>
             <Text style={{ color: colors.white, fontSize: 20 }}>›</Text>

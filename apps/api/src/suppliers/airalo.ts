@@ -89,7 +89,7 @@ function coverageOf(op: ApiOperator): string[] {
   return [...new Set([...fromCoverages, ...fromCountries].filter((c) => /^[A-Z]{2}$/.test(c)))];
 }
 
-/** Turn Airalo's nested package list into flat plans. Unlimited plans are left out for now. */
+/** Turn Airalo's nested package list into flat plans. Top-ups are left out. */
 export function mapItems(items: ApiItem[]): SupplierPlan[] {
   const plans: SupplierPlan[] = [];
   for (const item of items) {
@@ -101,7 +101,8 @@ export function mapItems(items: ApiItem[]): SupplierPlan[] {
         regional ? [] : (c.networks ?? []).map((n) => ({ operator: n.name ?? "Unknown", type: n.type ?? "" })),
       );
       for (const p of op.packages ?? []) {
-        if (p.type !== "sim" || p.is_unlimited || !p.amount || !p.day) continue;
+        const unlimited = Boolean(p.is_unlimited);
+        if (p.type !== "sim" || !p.day || (!unlimited && !p.amount)) continue;
         const wholesale = cents(p.prices?.net_price?.USD ?? p.net_price);
         if (wholesale === undefined) continue;
         plans.push({
@@ -110,12 +111,13 @@ export function mapItems(items: ApiItem[]): SupplierPlan[] {
           countryCode: regional ? regionKey(item.slug) : cc,
           countryName: item.title ?? cc,
           name: p.title ?? p.id,
-          dataBytes: p.amount * MB,
+          dataBytes: unlimited ? 0 : p.amount! * MB,
           validityDays: p.day,
           wholesaleCents: wholesale,
           recommendedRetailCents: cents(p.prices?.recommended_retail_price?.USD),
           networks: regional ? [{ operator: `${coverage.length} countries`, type: "" }] : networks,
           ...(regional ? { region: { name: item.title ?? item.slug, coverage } } : {}),
+          ...(unlimited ? { unlimited: {} } : {}),
         });
       }
     }
