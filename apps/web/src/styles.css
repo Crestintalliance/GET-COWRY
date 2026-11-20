@@ -184,3 +184,6 @@ img { max-width: 100%; }
   .globe { transition: none; }
   .country, .country:hover { transition: none; transform: none; }
 }
+
+/* Steps sit right under the hero, so they need less space above */
+.section.steps-section { padding-top: 24px; }

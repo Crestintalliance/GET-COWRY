@@ -78,6 +78,18 @@ export function Home() {
         </div>
       </section>
 
+      <section className="container section steps-section">
+        <h2 style={{ marginBottom: 24 }}>{t.steps.title}</h2>
+        <ol className="steps">
+          {t.steps.items.map((s) => (
+            <li key={s.h}>
+              <h3>{s.h}</h3>
+              <p>{s.p}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       {featured.length > 0 && (
         <section className="container section">
           <h2>{t.popular.title}</h2>
@@ -131,17 +143,6 @@ export function Home() {
         </div>
       </section>
 
-      <section className="container section">
-        <h2 style={{ marginBottom: 24 }}>{t.steps.title}</h2>
-        <ol className="steps">
-          {t.steps.items.map((s) => (
-            <li key={s.h}>
-              <h3>{s.h}</h3>
-              <p>{s.p}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
 
       <section className="container section">
         <div className="cta">
