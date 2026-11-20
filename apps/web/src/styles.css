@@ -163,23 +163,24 @@ img { max-width: 100%; }
 .admin-card p { margin: 4px 0; }
 .admin-meta { color: var(--mist); font-size: 14px; }
 
-/* Festive home hero: bunting, cowry shells, the plan count as the headline */
-.hero-wrap { position: relative; overflow: hidden; padding-top: 70px; }
-.bunting { position: absolute; top: 0; left: 0; width: 100%; height: 90px; }
-.pennant { transform-box: fill-box; transform-origin: 50% 0; animation: pennant-in 700ms cubic-bezier(0.2, 1.4, 0.4, 1) both; }
-@keyframes pennant-in { from { transform: scaleY(0) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
-.cowries { position: absolute; inset: 0; pointer-events: none; }
-.cowry { position: absolute; opacity: 0.9; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
-.hero-wrap .hero { position: relative; padding-left: 24px; padding-right: 24px; }
-.hero .festive-note { margin: 0; background: #f5c542; color: var(--night); font-weight: 700; font-size: 15px; padding: 8px 16px; border-radius: 999px; transform: rotate(-1.5deg); }
-.hero h1.count-title, .hero h1 { font-family: "Bricolage Grotesque", Sora, sans-serif; font-size: clamp(40px, 6.4vw, 72px); max-width: 15ch; }
+/* Home hero: headline and search beside a turning globe */
+.hero-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 24px; padding-top: 32px; padding-bottom: 48px; }
+.hero-copy { display: flex; flex-direction: column; gap: 20px; }
+.hero-copy h1 { margin: 0; font-family: "Bricolage Grotesque", Sora, sans-serif; font-size: clamp(40px, 5.6vw, 68px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; }
+.hero-copy > p { margin: 0; font-size: 19px; color: var(--mist); max-width: 34ch; }
+.hero-globe { order: 2; display: flex; justify-content: center; }
+.globe { cursor: grab; opacity: 0; transition: opacity 900ms ease; touch-action: pan-y; }
 .section h2 { font-family: "Bricolage Grotesque", Sora, sans-serif; }
-.country .flag, .picker-list .flag { font-size: 30px; line-height: 1; width: 44px; text-align: center; flex: none; }
-.picker-list .flag { font-size: 24px; width: 36px; }
-@media (max-width: 760px) {
-  .cowries { display: none; }
-  .hero-wrap { padding-top: 56px; }
+.flag-img { border-radius: 50%; flex: none; object-fit: cover; box-shadow: 0 0 0 2px var(--white), 0 4px 10px rgba(6, 40, 28, 0.25); }
+.country { transition: transform 160ms ease, background 160ms ease; }
+.country:hover { transform: translateY(-2px); }
+@media (max-width: 900px) {
+  .hero-split { grid-template-columns: 1fr; text-align: center; padding-top: 8px; }
+  .hero-globe { order: 0; }
+  .hero-globe .globe[style] { max-width: 250px !important; }
+  .hero-copy { align-items: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pennant { animation: none; }
+  .globe { transition: none; }
+  .country, .country:hover { transition: none; transform: none; }
 }

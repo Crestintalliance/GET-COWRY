@@ -1,7 +1,7 @@
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { Country } from "../api";
 import { countryName } from "../i18n";
-import { flag } from "./Festive";
+import { Flag } from "./Flag";
 import { useLang } from "../layout";
 
 interface Props {
@@ -151,9 +151,7 @@ export function DestinationPicker({ countries, selected, onChange, onSubmit, sub
               onClick={() => add(c.countryCode)}
               onMouseEnter={() => setActive(i)}
             >
-              <span className="flag" aria-hidden="true">
-                {flag(c.countryCode)}
-              </span>
+              <Flag code={c.countryCode} size={32} />
               <span className="name">{c.label}</span>
               <small>
                 {c.planCount} {c.planCount === 1 ? t.countries.plan : t.countries.plans}
