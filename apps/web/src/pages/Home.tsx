@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Country } from "../api";
 import { DestinationPicker } from "../components/DestinationPicker";
-import { Bunting, CowryScatter, flag } from "../components/Festive";
+import { Flag } from "../components/Flag";
+import { Globe } from "../components/Globe";
 import { countryName, type Lang } from "../i18n";
 import { useLang } from "../layout";
 import { FEATURED, REGIONS, type Region } from "../regions";
@@ -53,11 +54,11 @@ export function Home() {
 
   return (
     <>
-      <section className="hero-wrap">
-        <Bunting />
-        <CowryScatter />
-        <div className="container hero">
-        <p className="festive-note">{t.hero.festive}</p>
+      <section className="container hero-split">
+        <div className="hero-globe">
+          <Globe />
+        </div>
+        <div className="hero-copy">
         {totalPlans > 0 ? (
           <>
             <h1 className="count-title">{fill(t.hero.count)}</h1>
@@ -114,9 +115,7 @@ export function Home() {
           <div className="grid">
             {featured.map((c) => (
               <Link key={c.countryCode} to={`/${lang}/countries/${c.countryCode.toLowerCase()}`} className="country">
-                <span className="flag" aria-hidden="true">
-                  {flag(c.countryCode)}
-                </span>
+                <Flag code={c.countryCode} />
                 <span>
                   {countryName(c.countryCode, c.countryName, lang)}
                   <small>
