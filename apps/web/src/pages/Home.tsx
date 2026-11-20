@@ -6,7 +6,10 @@ import { Flag } from "../components/Flag";
 import { Globe } from "../components/Globe";
 import { countryName, type Lang } from "../i18n";
 import { useLang } from "../layout";
-import { FEATURED, HOME_TABS, type HomeTab } from "../regions";
+
+
+/** The four trips shown under "Popular trips home", in this order. */
+const POPULAR = ["GN", "PA", "DE", "US"];
 
 /** One country opens its page; several open the trip page with a section per country. */
 export function tripPath(lang: string, codes: string[]): string {
@@ -38,11 +41,9 @@ export function Home() {
     api.countries().then(setCountries).catch(() => setCountries([]));
   }, []);
 
-  const [region, setRegion] = useState<HomeTab>("africa");
-  const pick = (r: HomeTab) =>
-    FEATURED[r].map((code) => countries.find((c) => c.countryCode === code)).filter((c): c is Country => Boolean(c));
-  const tabs = HOME_TABS.filter((r) => pick(r).length > 0);
-  const featured = pick(tabs.includes(region) ? region : (tabs[0] ?? region));
+  const featured = POPULAR.map((code) => countries.find((c) => c.countryCode === code)).filter(
+    (c): c is Country => Boolean(c),
+  );
 
   function onSearch() {
     if (!picked.length) return setHint(true);
@@ -75,6 +76,9 @@ export function Home() {
             </p>
           )}
         </div>
+        <Link to={`/${lang}/countries`} className="btn btn-lime hero-cta">
+          {t.hero.getEsim}
+        </Link>
         </div>
       </section>
 
@@ -94,22 +98,6 @@ export function Home() {
         <section className="container section">
           <h2>{t.popular.title}</h2>
           <p className="lead">{t.popular.lead}</p>
-          {tabs.length > 1 && (
-            <div className="tabs" role="tablist" aria-label={t.popular.title}>
-              {tabs.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  role="tab"
-                  aria-selected={r === region}
-                  className={r === region ? "tab active" : "tab"}
-                  onClick={() => setRegion(r)}
-                >
-                  {t.regions[r]}
-                </button>
-              ))}
-            </div>
-          )}
           <div className="grid">
             {featured.map((c) => (
               <Link key={c.countryCode} to={`/${lang}/countries/${c.countryCode.toLowerCase()}`} className="country">
