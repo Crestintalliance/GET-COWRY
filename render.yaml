@@ -33,7 +33,13 @@ services:
           name: cowry-db
           property: connectionString
       - key: SUPPLIER
-        value: mock # sample plans; switch to esimaccess once real keys are set
+        value: mock # sample plans; switch to airalo once the Airalo keys are set
+      - key: SUPPLIER_ROUTES # countries sold by a specific supplier; Guinea is better value on eSIM Access
+        value: GN:esimaccess
+      - key: AIRALO_CLIENT_ID
+        sync: false
+      - key: AIRALO_CLIENT_SECRET
+        sync: false
       - key: ESIMACCESS_ACCESS_CODE
         sync: false
       - key: ESIMACCESS_SECRET_KEY

@@ -28,8 +28,13 @@ export interface PricedPlan extends SupplierPlan {
   netProfitCents: number;
 }
 
+/**
+ * Price a plan. Where the supplier recommends a selling price (Airalo), sell at exactly that:
+ * the partner agreement asks resellers not to go below it, and going above it makes us
+ * dearer than the supplier's own app. Otherwise use our markup rule.
+ */
 export function pricePlan(plan: SupplierPlan, rule: PricingRule): PricedPlan {
-  const retailCents = retailPriceCents(plan.wholesaleCents, rule);
+  const retailCents = plan.recommendedRetailCents ?? retailPriceCents(plan.wholesaleCents, rule);
   const netProfitCents = retailCents - plan.wholesaleCents - cardFeeCents(retailCents);
   return { ...plan, retailCents, netProfitCents };
 }

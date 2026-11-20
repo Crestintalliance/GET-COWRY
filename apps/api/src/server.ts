@@ -1,6 +1,6 @@
 import { createApp } from "./app.js";
 import { CatalogService } from "./catalog.js";
-import { loadConfig } from "./config.js";
+import { loadConfig, parseRoutes } from "./config.js";
 import { runMigrations } from "./db/migrate.js";
 import { GooglePlacesSearch } from "./guides/places.js";
 import { MemorySuggestionRepository, PgSuggestionRepository } from "./guides/suggestions.js";
@@ -16,10 +16,15 @@ const suppliers = buildSuppliers(cfg);
 const primary = suppliers.get(cfg.SUPPLIER);
 if (!primary) throw new Error(`Supplier ${cfg.SUPPLIER} is not configured`);
 
-const catalog = new CatalogService(primary, {
-  minProfitCents: Math.round(cfg.PRICE_MIN_PROFIT_USD * 100),
-  minMarkup: cfg.PRICE_MIN_MARKUP,
-});
+// The default supplier first, then any other real supplier that's configured, for routed countries.
+const routes = parseRoutes(cfg.SUPPLIER_ROUTES);
+const sellers = [primary, ...[...suppliers.values()].filter((s) => s !== primary && s.id !== "mock")];
+const catalog = new CatalogService(
+  sellers,
+  { minProfitCents: Math.round(cfg.PRICE_MIN_PROFIT_USD * 100), minMarkup: cfg.PRICE_MIN_MARKUP },
+  Date.now,
+  routes,
+);
 
 const useStripe = Boolean(cfg.STRIPE_SECRET_KEY && cfg.STRIPE_WEBHOOK_SECRET);
 const payments = useStripe
